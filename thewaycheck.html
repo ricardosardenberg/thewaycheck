@@ -1,0 +1,2786 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0e0d;--surface:#1a1917;--surface2:#242320;--surface3:#2e2c29;
+  --border:#3a3835;--gold:#c9a84c;--gold2:#e8c97a;--text:#f0ede8;
+  --muted:#8a8680;--accent:#4a9eff;--green:#4caf7d;--red:#e05252;
+  --purple:#9b6fd4;--teal:#3dbfa8;
+  --radius:10px;--font-head:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;min-height:100vh}
+
+/* NAV */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font-head);font-size:20px;color:var(--gold);letter-spacing:.5px;white-space:nowrap}
+.logo span{color:var(--muted);font-size:13px;font-family:var(--font-body);margin-left:8px}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto}
+.nav-tab{background:none;border:none;color:var(--muted);font-family:var(--font-body);font-size:13px;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.nav-tab:hover{color:var(--text);background:var(--surface2)}
+.nav-tab.active{color:var(--gold);background:var(--surface2);border:1px solid var(--border)}
+.nav-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn{padding:7px 16px;border-radius:var(--radius);border:none;font-family:var(--font-body);font-size:13px;cursor:pointer;transition:all .2s;font-weight:500}
+.btn-gold{background:var(--gold);color:#0f0e0d}
+.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff}
+.btn-teal{background:var(--teal);color:#0f0e0d}
+.btn-teal:hover{opacity:.88}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-purple:hover{opacity:.88}
+
+/* LAYOUT */
+.page{display:none;padding:28px 32px;max-width:1200px;margin:0 auto;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTIONS */
+.section-title{font-family:var(--font-head);font-size:22px;color:var(--gold);margin-bottom:4px}
+.section-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-weight:600;font-size:15px;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';width:3px;height:16px;background:var(--gold);border-radius:2px;display:inline-block}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field select option{background:var(--surface2)}
+.field textarea{resize:vertical;min-height:80px}
+
+/* SLIDER FIELDS */
+.slider-group{display:flex;flex-direction:column;gap:4px}
+.slider-group label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:flex;justify-content:space-between}
+.slider-group label span{color:var(--gold);font-weight:600}
+.slider-group input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--surface3);border-radius:2px;outline:none}
+.slider-group input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer}
+
+/* CHECKBOXES / TAGS */
+.tag-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.tag-check{display:none}
+.tag-label{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;color:var(--muted);transition:all .2s;user-select:none}
+.tag-check:checked+.tag-label{background:var(--gold);color:#0f0e0d;border-color:var(--gold);font-weight:600}
+
+/* DIMENSION GRID */
+.dim-grid{display:grid;grid-template-columns:120px 1fr 1fr 1fr;gap:10px;align-items:center}
+.dim-label{font-size:13px;color:var(--text);font-weight:500}
+.dim-head{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;text-align:center}
+.dim-input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:7px;text-align:center;outline:none;width:100%}
+.dim-input:focus{border-color:var(--gold)}
+
+/* SERVICE CARDS */
+.service-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;transition:border-color .2s}
+.service-card:hover{border-color:var(--gold)}
+.service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px}
+.service-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:var(--surface3);color:var(--gold);border:1px solid var(--border)}
+.service-badge.offer{background:#0f2a1e;color:var(--green);border-color:#1a5035}
+.service-badge.request{background:#1a1a2e;color:#7a9fff;border-color:#2a3a6e}
+.price-tag{font-size:22px;font-family:var(--font-head);color:var(--gold2)}
+.price-tag span{font-size:13px;color:var(--muted);font-family:var(--font-body)}
+.metric-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.metric{background:var(--surface3);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted)}
+
+/* CALL CARDS */
+.call-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.call-avatar{width:44px;height:44px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;color:var(--gold);flex-shrink:0}
+.call-info{flex:1}
+.call-name{font-weight:600;font-size:15px}
+.call-meta{color:var(--muted);font-size:12px;margin-top:2px}
+.call-status{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.status-scheduled{background:#1a3a2a;color:var(--green)}
+.status-live{background:#3a1a1a;color:var(--red)}
+.status-cancelled{background:var(--surface3);color:var(--muted)}
+.cancel-reason{margin-top:10px;padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:580px;max-width:95vw;max-height:88vh;overflow-y:auto}
+.modal-title{font-family:var(--font-head);font-size:20px;color:var(--gold);margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+/* LIFE CYCLE */
+.lifecycle-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.lc-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .2s;user-select:none}
+.lc-btn.selected{background:var(--gold);color:#0f0e0d;border-color:var(--gold);font-weight:700}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.row-center{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.text-muted{color:var(--muted)}
+.text-gold{color:var(--gold)}
+.mt-8{margin-top:8px}
+.mt-16{margin-top:16px}
+.mb-16{margin-bottom:16px}
+
+
+/* ── PRAYER LIST ── */
+.prayer-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.prayer-search{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);font-size:13px;padding:7px 14px;outline:none;flex:1;min-width:200px;transition:border-color .2s}
+.prayer-search:focus{border-color:var(--gold)}
+.prayer-type-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:none;transition:all .2s;white-space:nowrap}
+.prayer-type-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1)}
+.prayer-type-btn.active-request{border-color:#7a9fff;color:#7a9fff;background:rgba(122,159,255,.08)}
+.prayer-type-btn.active-praise{border-color:var(--green);color:var(--green);background:rgba(76,175,125,.08)}
+.prayer-grid{display:flex;flex-direction:column;gap:10px}
+.prayer-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start;transition:border-color .2s}
+.prayer-item:hover{border-color:var(--gold)}
+.prayer-dot{width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.prayer-dot.context{background:var(--muted)}
+.prayer-dot.request{background:#7a9fff}
+.prayer-dot.praise{background:var(--green)}
+.prayer-item-body{display:flex;flex-direction:column;gap:4px}
+.prayer-name{font-weight:600;font-size:15px;color:var(--text)}
+.prayer-context{font-size:13px;color:var(--muted);line-height:1.5;margin-top:2px}
+.prayer-meta{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.prayer-type-tag{padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.prayer-type-tag.context{background:var(--surface3);color:var(--muted)}
+.prayer-type-tag.request{background:rgba(122,159,255,.12);color:#7a9fff;border:1px solid rgba(122,159,255,.2)}
+.prayer-type-tag.praise{background:rgba(76,175,125,.12);color:var(--green);border:1px solid rgba(76,175,125,.2)}
+.prayer-date{font-size:11px;color:var(--muted)}
+.prayer-actions{display:flex;gap:6px;align-items:flex-start}
+.prayer-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 7px;border-radius:6px;transition:all .2s}
+.prayer-del:hover{color:var(--red);background:#3a1a1a}
+.prayer-edit-btn{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:11px;padding:4px 10px;border-radius:6px;transition:all .2s;font-family:var(--font-body)}
+.prayer-edit-btn:hover{border-color:var(--gold);color:var(--gold)}
+.prayer-answered{opacity:.5;text-decoration:none}
+.prayer-answered .prayer-name{text-decoration:line-through;text-decoration-color:var(--green)}
+.prayer-stats{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.prayer-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px}
+.prayer-stat-num{font-family:var(--font-head);font-size:26px;color:var(--gold)}
+.prayer-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+
+
+/* ── SPIRITUAL COVERING ── */
+.covering-banner{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(155,111,212,.35);border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden}
+.covering-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(155,111,212,.08) 0%,transparent 70%);pointer-events:none}
+.covering-cross{font-size:32px;flex-shrink:0;opacity:.85}
+.covering-info{flex:1;min-width:180px}
+.covering-church-name{font-family:var(--font-head);font-size:18px;color:#c4a0e8;margin-bottom:2px}
+.covering-city{font-size:12px;color:var(--muted);margin-bottom:6px}
+.covering-label{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(155,111,212,.15);color:#c4a0e8;border:1px solid rgba(155,111,212,.25);margin-bottom:8px}
+.covering-detail{font-size:12px;color:var(--muted);line-height:1.6}
+.covering-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.covering-none{background:var(--surface2);border:1px dashed var(--border);border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s}
+.covering-none:hover{border-color:var(--purple)}
+.covering-pastor{font-size:13px;color:var(--muted);margin-top:4px}
+.covering-pastor span{color:#c4a0e8;font-weight:500}
+.covering-gov-tag{font-size:11px;color:var(--muted);padding:2px 8px;background:var(--surface3);border-radius:6px;display:inline-block;margin-top:4px}
+/* Covering church cards on main page */
+.church-network-card{background:var(--surface);border:1px solid rgba(155,111,212,.3);border-radius:14px;padding:20px;transition:border-color .25s,transform .2s;position:relative}
+.church-network-card:hover{border-color:#9b6fd4;transform:translateY(-2px)}
+.church-network-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--purple);border-radius:2px 0 0 2px}
+
+
+/* ── PASTORAL GATHERINGS ── */
+.gathering-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:28px}
+.gathering-type-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.gathering-type-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.gathering-type-card.active-type{border-color:var(--gold);background:var(--surface2)}
+.gathering-type-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:2px 0 0 2px}
+.gathering-type-card.coffee::before{background:#c9a84c}
+.gathering-type-card.prayer-g::before{background:#7a9fff}
+.gathering-type-card.scripture-g::before{background:#4caf7d}
+.gathering-type-card.fellowship-g::before{background:#9b6fd4}
+.gathering-type-card.communion-g::before{background:#e05252}
+.gathering-icon{font-size:32px;margin-bottom:8px;display:block}
+.gathering-type-name{font-family:var(--font-head);font-size:16px;margin-bottom:4px}
+.gathering-type-count{font-size:12px;color:var(--muted)}
+.gathering-list{display:flex;flex-direction:column;gap:10px}
+.gathering-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:start;transition:border-color .2s}
+.gathering-row:hover{border-color:var(--gold)}
+.gathering-date-block{text-align:center;min-width:52px;background:var(--surface2);border-radius:8px;padding:8px 6px}
+.gathering-date-day{font-family:var(--font-head);font-size:22px;color:var(--gold);line-height:1}
+.gathering-date-mon{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.gathering-body{flex:1}
+.gathering-title{font-weight:600;font-size:15px;color:var(--text);margin-bottom:4px}
+.gathering-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.gathering-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:6px}
+.gathering-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.gathering-badge.coffee{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.gathering-badge.prayer-g{background:rgba(122,159,255,.12);color:#7a9fff;border:1px solid rgba(122,159,255,.2)}
+.gathering-badge.scripture-g{background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.2)}
+.gathering-badge.fellowship-g{background:rgba(155,111,212,.12);color:#9b6fd4;border:1px solid rgba(155,111,212,.2)}
+.gathering-badge.communion-g{background:rgba(224,82,82,.12);color:#e05252;border:1px solid rgba(224,82,82,.2)}
+.gathering-stats-bar{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.gathering-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:80px}
+.gathering-stat-num{font-family:var(--font-head);font-size:24px;color:var(--gold)}
+.gathering-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+
+
+/* ── DOCTRINAL STATEMENT ── */
+.doctrine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-bottom:28px}
+.doctrine-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:border-color .25s,transform .2s}
+.doctrine-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.doctrine-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold);border-radius:2px 0 0 2px}
+.doctrine-num{font-family:var(--font-head);font-size:40px;color:var(--gold);opacity:.15;position:absolute;top:10px;right:16px;line-height:1}
+.doctrine-title{font-family:var(--font-head);font-size:18px;color:var(--gold2);margin-bottom:10px}
+.doctrine-body{font-size:13px;color:var(--muted);line-height:1.75}
+.doctrine-verse{font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-style:italic;opacity:.8}
+.doctrine-header-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden}
+.doctrine-header-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 90% 50%,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
+.doctrine-network-name{font-family:var(--font-head);font-size:24px;color:var(--gold);margin-bottom:6px}
+.doctrine-subtitle{font-size:13px;color:var(--muted);line-height:1.6;max-width:600px}
+.doctrine-agreement{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:8px}
+.doctrine-agreement-title{font-weight:600;font-size:14px;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.doctrine-agreement-title::before{content:'';width:3px;height:14px;background:var(--green);border-radius:2px;display:inline-block}
+.doctrine-church-check{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.doctrine-church-check:last-child{border-bottom:none}
+
+
+/* ── MICRO-CHURCH GOVERNMENT ── */
+.mc-gov-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid}
+.mc-gov-independent{background:rgba(76,175,125,.1);color:#4caf7d;border-color:rgba(76,175,125,.3)}
+.mc-gov-bylaws{background:rgba(122,159,255,.1);color:#7a9fff;border-color:rgba(122,159,255,.3)}
+.mc-gov-elders{background:rgba(201,168,76,.1);color:var(--gold);border-color:rgba(201,168,76,.3)}
+.mc-gov-church{background:rgba(155,111,212,.1);color:#c4a0e8;border-color:rgba(155,111,212,.3)}
+.mc-gov-other{background:var(--surface3);color:var(--muted);border-color:var(--border)}
+
+/* ── DISCIPLE PRACTICES ── */
+.practice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.practice-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .25s,transform .2s;position:relative;overflow:hidden}
+.practice-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.practice-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold);border-radius:2px 0 0 2px;opacity:.6}
+.practice-icon{font-size:28px;margin-bottom:10px;display:block}
+.practice-name{font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:4px}
+.practice-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.practice-level-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.practice-level-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.practice-level-val{font-size:20px;font-family:var(--font-head);color:var(--gold);font-weight:700;min-width:28px;text-align:right}
+.practice-pips{display:flex;gap:5px;margin-top:8px}
+.pip{flex:1;height:6px;border-radius:3px;background:var(--surface3);transition:background .3s}
+.pip.filled{background:var(--gold)}
+.practice-note{margin-top:12px}
+.practice-note textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;resize:none;width:100%;height:58px}
+.practice-note textarea:focus{border-color:var(--gold)}
+.disciple-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:28px;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.disciple-score-block{text-align:center;min-width:120px}
+.disciple-score-num{font-family:var(--font-head);font-size:52px;color:var(--gold);line-height:1}
+.disciple-score-label{font-size:12px;color:var(--muted);margin-top:4px}
+.disciple-radar{flex:1;min-width:260px}
+.practice-slider{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;outline:none;cursor:pointer}
+.practice-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--gold);border-radius:50%;cursor:pointer;border:2px solid var(--bg)}
+
+/* ── FELLOWSHIP EVENTS ── */
+.fe-row{display:grid;grid-template-columns:130px 1fr 90px 80px;gap:10px;align-items:center;padding:9px 4px;border-radius:8px;transition:background .15s}
+.fe-row:hover{background:var(--surface2)}
+.fe-date{font-size:13px;color:var(--muted);white-space:nowrap}
+.fe-desc-cell{font-size:13px;color:var(--text);line-height:1.4}
+.fe-people-cell{text-align:center;font-family:var(--font-head);font-size:16px;color:var(--gold)}
+.fe-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:6px;transition:all .2s;text-align:right;width:100%}
+.fe-del:hover{color:var(--red);background:#3a1a1a}
+
+/* ── INSTALLATION MEMBERS ── */
+.member-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:4px}
+.member-slot{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.member-slot:hover{border-color:var(--gold);background:var(--surface3)}
+.member-slot.filled{border-color:var(--border)}
+.member-slot.filled:hover{border-color:var(--gold)}
+.member-slot.add-slot{border-style:dashed;color:var(--muted)}
+.member-slot.add-slot:hover{border-color:var(--gold);color:var(--gold)}
+.member-avatar{width:38px;height:38px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;color:var(--gold);border:1px solid var(--border);flex-shrink:0}
+.member-slot-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3}
+.member-slot-role{font-size:10px;color:var(--muted)}
+.member-cap-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.member-cap-track{flex:1;height:6px;background:var(--surface3);border-radius:3px;min-width:100px}
+.member-cap-fill{height:100%;border-radius:3px;background:var(--gold);transition:width .4s}
+.member-cap-fill.full{background:var(--red)}
+/* Member drawer */
+.member-drawer{display:none;position:fixed;top:0;right:0;width:540px;max-width:100vw;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:500;overflow-y:auto;padding:28px 24px;animation:slideIn .25s ease}
+.member-drawer.open{display:block}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499}
+.drawer-overlay.open{display:block}
+.drawer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.drawer-title{font-family:var(--font-head);font-size:20px;color:var(--gold)}
+.drawer-section{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.drawer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.drawer-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.drawer-full{grid-column:1/-1}
+.pip-sm{width:12px;height:12px;border-radius:50%;background:var(--surface3);display:inline-block;transition:background .2s}
+.pip-sm.filled{background:var(--gold)}
+.attr-slider{-webkit-appearance:none;width:100%;height:4px;background:var(--surface3);border-radius:2px;outline:none}
+.attr-slider::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--gold);border-radius:50%;cursor:pointer}
+
+.inst-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.inst-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:28px}
+.inst-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:border-color .25s,transform .2s;position:relative}
+.inst-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.inst-card.active-inst{border-color:var(--gold);background:var(--surface2)}
+.inst-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.inst-id{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.inst-type-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;border:1px solid var(--border)}
+.inst-name{font-family:var(--font-head);font-size:18px;color:var(--gold2);margin-bottom:4px}
+.inst-responsible{font-size:13px;color:var(--muted)}
+.inst-meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.inst-chip{background:var(--surface3);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted)}
+.inst-actions{display:flex;gap:8px;margin-top:14px}
+.inst-detail{background:var(--surface);border:1px solid var(--gold);border-radius:14px;padding:24px;margin-bottom:24px;display:none}
+.inst-detail.open{display:block;animation:fadeIn .3s ease}
+.inst-detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.inst-detail-title{font-family:var(--font-head);font-size:20px;color:var(--gold)}
+.board-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.board-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center}
+.board-row input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s}
+.board-row input:focus{border-color:var(--gold)}
+.board-remove{background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:6px;transition:background .2s}
+.board-remove:hover{background:#3a1a1a}
+.add-board-btn{background:none;border:1px dashed var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:8px;cursor:pointer;transition:all .2s;margin-top:8px;width:100%;text-align:center}
+.add-board-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Inst services tabs */
+.tab-pills{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab-pill{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:none;transition:all .2s}
+.tab-pill.active{background:var(--gold);color:#0f0e0d;border-color:var(--gold)}
+.tab-pill.active-teal{background:var(--teal);color:#0f0e0d;border-color:var(--teal)}
+.tab-pill.active-purple{background:var(--purple);color:#fff;border-color:var(--purple)}
+.inst-service-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .2s}
+.inst-service-card:hover{border-color:var(--gold)}
+.inst-service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.svc-type-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.svc-offer .svc-type-dot{background:var(--green)}
+.svc-request .svc-type-dot{background:#7a9fff}
+
+/* governance color map */
+.type-household{background:#1a2a1a;color:#5ab06a;border-color:#1a4a2a}
+.type-church{background:#2a1a2a;color:#c07ad4;border-color:#4a1a5a}
+.type-business{background:#1a2535;color:#5a9fd4;border-color:#1a3a5a}
+.type-ngo{background:#2a2a1a;color:#c4b450;border-color:#4a4a1a}
+.type-school{background:#2a1a1a;color:#d47a5a;border-color:#5a2a1a}
+.type-college{background:#1a2a2a;color:#5ac4c4;border-color:#1a4a4a}
+.type-university{background:#1a1a2a;color:#7a8ad4;border-color:#2a2a5a}
+
+/* empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .icon{font-size:48px;margin-bottom:16px;opacity:.4}
+.empty-state h3{font-family:var(--font-head);font-size:20px;color:var(--text);margin-bottom:8px;opacity:.5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">I'm a disciple of Jesus - Boca Network <span></span></div>
+  <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('profile',this)">Identity</button>
+      <button class="nav-tab" onclick="showPage('competencies',this)">Skills</button>
+      <button class="nav-tab" onclick="showPage('lifecycle',this)">Life Dimensions</button>
+      <button class="nav-tab" onclick="showPage('disciple',this)">Disciple Practices</button>
+      <button class="nav-tab" onclick="showPage('essentials',this)">Essentials</button>
+    </div>
+  <div class="nav-actions">
+  </div>
+</div>
+
+<!-- PAGE: IDENTITY -->
+<div class="page active" id="page-profile">
+  <div class="section-title">Identity</div>
+  <div class="section-sub">Your personal identification, purpose and roles in life</div>
+  <div class="card">
+    <div class="card-title">Personal Identification</div>
+    <div class="form-grid">
+      <div class="field"><label>Name</label><input type="text" placeholder="John"/></div>
+      <div class="field"><label>Sobrenome</label><input type="text" placeholder="Smith"/></div>
+      <div class="field"><label>Father's Name</label><input type="text" placeholder="Robert Smith"/></div>
+      <div class="field"><label>Mother's Name</label><input type="text" placeholder="Mary Smith"/></div>
+      <div class="field"><label>Date of Birth</label><input type="date"/></div>
+      <div class="field"><label>City of Birth</label><input type="text" placeholder="Miami, USA"/></div>
+      <div class="field"><label>City of Residence</label><input type="text" placeholder="Boca Raton, USA"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Purpose Levels</div>
+    <div class="form-grid-3">
+      <div class="field"><label>Results Level</label>
+        <select><option>-- Select --</option><option>1 - Emerging</option><option>2 - Developing</option><option>3 - Competent</option><option>4 - Proficient</option><option>5 - Expert</option></select>
+      </div>
+      <div class="field"><label>Multiplication Level</label>
+        <select><option>-- Select --</option><option>1 - Self</option><option>2 - One-on-One</option><option>3 - Small Group</option><option>4 - Community</option><option>5 - Movement</option></select>
+      </div>
+      <div class="field"><label>Governance Level</label>
+        <select><option>-- Select --</option><option>1 - Self-governed</option><option>2 - Family</option><option>3 - Team</option><option>4 - Organization</option><option>5 - Society</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Roles</div>
+    <div class="tag-group">
+      <input type="checkbox" class="tag-check" id="r-father"><label class="tag-label" for="r-father">Father</label>
+      <input type="checkbox" class="tag-check" id="r-mother"><label class="tag-label" for="r-mother">Mother</label>
+      <input type="checkbox" class="tag-check" id="r-professional"><label class="tag-label" for="r-professional">Professional</label>
+      <input type="checkbox" class="tag-check" id="r-husband"><label class="tag-label" for="r-husband">Husband</label>
+      <input type="checkbox" class="tag-check" id="r-wife"><label class="tag-label" for="r-wife">Wife</label>
+      <input type="checkbox" class="tag-check" id="r-friend"><label class="tag-label" for="r-friend">Friend</label>
+      <input type="checkbox" class="tag-check" id="r-relative"><label class="tag-label" for="r-relative">Relative</label>
+      <input type="checkbox" class="tag-check" id="r-citizen"><label class="tag-label" for="r-citizen">Citizen</label>
+      <input type="checkbox" class="tag-check" id="r-disciple"><label class="tag-label" for="r-disciple">Disciple</label>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Atributos Essentials</div>
+    <div class="form-grid-2">
+      <div class="slider-group"><label>Truth Level <span id="truth-val">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('truth-val').textContent=this.value"/></div>
+      <div class="slider-group"><label>Love Level <span id="love-val">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('love-val').textContent=this.value"/></div>
+    </div>
+    <div class="mt-16">
+      <div class="field"><label>Credentials</label><textarea placeholder="List your credentials, certifications, degrees, licenses..."></textarea></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Domains, Expertise & Industries</div>
+    <div class="form-grid">
+      <div class="field"><label>Domains</label><input type="text" placeholder="Architecture, Education, Technology..."/></div>
+      <div class="field"><label>Expertise</label><input type="text" placeholder="BIM, Residential Design..."/></div>
+      <div class="field"><label>Industries</label><input type="text" placeholder="Construction, Real Estate..."/></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SKILLS -->
+<div class="page" id="page-competencies">
+  <div class="section-title">Skills Profile</div>
+  <div class="section-sub">Academic knowledge, languages and professional skills</div>
+  <div class="card">
+    <div class="card-title">Academic Knowledge</div>
+    <div class="form-grid">
+      <div class="slider-group"><label>Math <span id="sl-math">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-math').textContent=this.value"/></div>
+      <div class="slider-group"><label>Economics <span id="sl-econ">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-econ').textContent=this.value"/></div>
+      <div class="slider-group"><label>Operations <span id="sl-ops">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-ops').textContent=this.value"/></div>
+      <div class="slider-group"><label>Engineering <span id="sl-eng">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-eng').textContent=this.value"/></div>
+      <div class="slider-group"><label>Human Health <span id="sl-hh">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-hh').textContent=this.value"/></div>
+      <div class="slider-group"><label>Mental Health <span id="sl-mhl">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-mhl').textContent=this.value"/></div>
+      <div class="slider-group"><label>Chemistry <span id="sl-chem">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-chem').textContent=this.value"/></div>
+      <div class="slider-group"><label>Physics <span id="sl-phys">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-phys').textContent=this.value"/></div>
+      <div class="slider-group"><label>Philosophy <span id="sl-phil">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-phil').textContent=this.value"/></div>
+      <div class="slider-group"><label>Marketing <span id="sl-mktg">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-mktg').textContent=this.value"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Language Skills</div>
+    <div class="form-grid">
+      <div class="slider-group"><label>English <span id="sl-en">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('sl-en').textContent=this.value"/></div>
+      <div class="slider-group"><label>Spanish <span id="sl-es">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-es').textContent=this.value"/></div>
+      <div class="slider-group"><label>French <span id="sl-fr">2</span></label><input type="range" min="1" max="10" value="2" oninput="document.getElementById('sl-fr').textContent=this.value"/></div>
+      <div class="slider-group"><label>German <span id="sl-de">1</span></label><input type="range" min="1" max="10" value="1" oninput="document.getElementById('sl-de').textContent=this.value"/></div>
+      <div class="slider-group"><label>Chinese <span id="sl-zh">1</span></label><input type="range" min="1" max="10" value="1" oninput="document.getElementById('sl-zh').textContent=this.value"/></div>
+      <div class="slider-group"><label>Italian <span id="sl-it">1</span></label><input type="range" min="1" max="10" value="1" oninput="document.getElementById('sl-it').textContent=this.value"/></div>
+      <div class="slider-group"><label>Hindi <span id="sl-hi">1</span></label><input type="range" min="1" max="10" value="1" oninput="document.getElementById('sl-hi').textContent=this.value"/></div>
+      <div class="slider-group"><label>Japanese <span id="sl-ja">1</span></label><input type="range" min="1" max="10" value="1" oninput="document.getElementById('sl-ja').textContent=this.value"/></div>
+    </div>
+    <div class="mt-16">
+      <div class="field"><label>Other Language(s)</label><input type="text" placeholder="e.g. Arabic — Level 4, Sign Language — Level 3"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Professional Skills</div>
+    <div class="form-grid">
+      <div class="slider-group"><label>Problem-Solving <span id="sl-ps">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('sl-ps').textContent=this.value"/></div>
+      <div class="slider-group"><label>Communication <span id="sl-comm">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('sl-comm').textContent=this.value"/></div>
+      <div class="slider-group"><label>Planning <span id="sl-plan">4</span></label><input type="range" min="1" max="10" value="4" oninput="document.getElementById('sl-plan').textContent=this.value"/></div>
+      <div class="slider-group"><label>Operations <span id="sl-op">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('sl-op').textContent=this.value"/></div>
+      <div class="slider-group"><label>Sales <span id="sl-sa">4</span></label><input type="range" min="1" max="10" value="4" oninput="document.getElementById('sl-sa').textContent=this.value"/></div>
+      <div class="slider-group"><label>Finance <span id="sl-fi">3</span></label><input type="range" min="1" max="10" value="3" oninput="document.getElementById('sl-fi').textContent=this.value"/></div>
+      <div class="slider-group"><label>Engineering <span id="sl-en2">5</span></label><input type="range" min="1" max="10" value="5" oninput="document.getElementById('sl-en2').textContent=this.value"/></div>
+      <div class="slider-group"><label>Product Management <span id="sl-pm">4</span></label><input type="range" min="1" max="10" value="4" oninput="document.getElementById('sl-pm').textContent=this.value"/></div>
+      <div class="slider-group"><label>Project Management <span id="sl-pjm">4</span></label><input type="range" min="1" max="10" value="4" oninput="document.getElementById('sl-pjm').textContent=this.value"/></div>
+      <div class="slider-group"><label>Services <span id="sl-serv">4</span></label><input type="range" min="1" max="10" value="4" oninput="document.getElementById('sl-serv').textContent=this.value"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: LIFE DIMENSIONS -->
+<div class="page" id="page-lifecycle">
+  <div class="section-title">Life Dimensions</div>
+  <div class="section-sub">Estágio do ciclo de vida, indicadores de saúde e visão dimensional</div>
+  <div class="card">
+    <div class="card-title">Life Cycle Stage</div>
+    <div class="lifecycle-grid" id="lcGrid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Health Indicators (1–5)</div>
+    <div class="form-grid">
+      <div class="slider-group"><label>Spiritual Maturity <span id="sm-v">3</span></label><input type="range" min="1" max="5" value="3" oninput="document.getElementById('sm-v').textContent=this.value"/></div>
+      <div class="slider-group"><label>Physical Health <span id="ph-v">3</span></label><input type="range" min="1" max="5" value="3" oninput="document.getElementById('ph-v').textContent=this.value"/></div>
+      <div class="slider-group"><label>Mental Health <span id="mh-v">3</span></label><input type="range" min="1" max="5" value="3" oninput="document.getElementById('mh-v').textContent=this.value"/></div>
+      <div class="slider-group"><label>Financial Health <span id="fh-v">3</span></label><input type="range" min="1" max="5" value="3" oninput="document.getElementById('fh-v').textContent=this.value"/></div>
+      <div class="slider-group"><label>Family Health <span id="fam-v">3</span></label><input type="range" min="1" max="5" value="3" oninput="document.getElementById('fam-v').textContent=this.value"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Dimensional Targets — Vision / Target / Actual</div>
+    <div class="dim-grid">
+      <div></div><div class="dim-head">Vision</div><div class="dim-head">Target</div><div class="dim-head">Actual</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px" id="dimRows"></div>
+  </div>
+</div>
+
+<!-- PAGE: DISCIPLE PRACTICES -->
+<div class="page" id="page-disciple">
+  <div class="section-title">Disciple Practices</div>
+  <div class="section-sub">Spiritual disciplines that form the rhythm of a disciple's life — rate each practice from 1 (beginning) to 5 (consistent & mature)</div>
+
+  <!-- Summary bar -->
+  <div class="disciple-summary">
+    <div class="disciple-score-block">
+      <div class="disciple-score-num" id="dp-total">–</div>
+      <div class="disciple-score-label">Overall Score<br><span style="font-size:10px;color:var(--border)">(out of 50)</span></div>
+    </div>
+    <div style="width:1px;height:60px;background:var(--border);flex-shrink:0"></div>
+    <div class="disciple-radar" style="flex:1">
+      <canvas id="dp-radar" height="180"></canvas>
+    </div>
+  </div>
+
+  <div class="practice-grid" id="practiceGrid"></div>
+
+  <!-- Fellowship Events -->
+  <div class="card" style="margin-top:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="card-title" style="margin-bottom:0">Fellowship Events</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('fellowshipModal')">+ Add Event</button>
+    </div>
+    <!-- Table header -->
+    <div id="fellowshipTableWrap">
+      <div style="display:grid;grid-template-columns:130px 1fr 90px 80px;gap:10px;padding:0 4px 8px;border-bottom:1px solid var(--border);margin-bottom:4px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Date</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Description</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;text-align:center">People</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;text-align:right">Action</div>
+      </div>
+      <div id="fellowshipRows">
+        <div style="text-align:center;padding:28px 0;color:var(--muted);font-size:13px" id="fellowshipEmpty">No fellowship events logged yet. Add your first one above.</div>
+      </div>
+      <!-- Summary row -->
+      <div id="fellowshipSummary" style="display:none;border-top:1px solid var(--border);margin-top:8px;padding-top:10px;display:flex;gap:20px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--muted)">Total events: <span id="fe-count" style="color:var(--gold);font-weight:600">0</span></span>
+        <span style="font-size:12px;color:var(--muted)">Total people reached: <span id="fe-people" style="color:var(--gold);font-weight:600">0</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: INSTALLATIONS -->
+<div class="page" id="page-installations">
+  <div class="inst-header">
+    <div>
+      <div class="section-title">Installations</div>
+      <div class="section-sub" style="margin-bottom:0">Entities you are responsible for — households, organizations, schools and more</div>
+    </div>
+    <button class="btn btn-gold" onclick="openModal('newInstModal')">+ New Installation</button>
+  </div>
+
+  <!-- Installation detail panel (shown when editing) -->
+  <div class="inst-detail" id="instDetailPanel">
+    <div class="inst-detail-header">
+      <div>
+        <div class="inst-detail-title" id="detailPanelTitle">Installation Details</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px;flex-wrap:wrap">
+          <div style="font-size:12px;color:var(--muted)" id="detailPanelId"></div>
+          <div id="detailMcGovBadge"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-teal btn-sm" onclick="saveInstallation()">Save Changes</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeInstDetail()">Close</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- Left column -->
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Entity Information</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="field"><label>Entity Name</label><input type="text" id="det-name" placeholder="Entity name"/></div>
+            <div class="field"><label>Entity Type</label>
+              <select id="det-type" onchange="updateDetailBadge()">
+                <option value="">-- Select Type --</option>
+                <option value="Household">Household</option>
+                <option value="Church">Church</option>
+                <option value="Business">Business</option>
+                <option value="NGO">NGO</option>
+                <option value="Elementary School">Elementary School</option>
+                <option value="Middle School">Middle School</option>
+                <option value="High School">High School</option>
+                <option value="College">College</option>
+                <option value="University">University</option>
+              </select>
+            </div>
+            <div class="form-grid-2">
+              <div class="field"><label>Responsible First Name</label><input type="text" id="det-fname" placeholder="First Name"/></div>
+              <div class="field"><label>Responsible Last Name</label><input type="text" id="det-lname" placeholder="Last Name"/></div>
+            </div>
+            <div class="field"><label>City</label><input type="text" id="det-city" placeholder="e.g. Boca Raton, FL"/></div>
+            <div class="field"><label>Governance Model</label>
+              <select id="det-gov">
+                <option value="">-- Select --</option>
+                <option value="Sole Leadership">Sole Leadership — Single leader with full authority</option>
+                <option value="Elder Board">Elder Board — Group of elders govern collectively</option>
+                <option value="Congregational">Congregational — Members vote on major decisions</option>
+                <option value="Episcopal">Episcopal — Hierarchical, bishop-led governance</option>
+                <option value="Presbyterian">Presbyterian — Representative assembly model</option>
+                <option value="Corporate Board">Corporate Board — Directors + Officers structure</option>
+                <option value="Cooperative">Cooperative — Member-owned, democratic governance</option>
+                <option value="Advisory Board">Advisory Board — Advisors inform, leader decides</option>
+                <option value="Flat / Self-managed">Flat / Self-managed — No formal hierarchy</option>
+                <option value="Family Council">Family Council — Extended family governance body</option>
+                <option value="Trustee Model">Trustee Model — Trustees hold fiduciary responsibility</option>
+                <option value="Academic Senate">Academic Senate — Faculty-led shared governance</option>
+                <option value="Student Government">Student Government — Student-led representation</option>
+                <option value="Hybrid">Hybrid — Mixed governance model</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>Micro-Church Government</label>
+              <select id="det-mc-gov" onchange="updateMcGovDesc()">
+                <option value="">-- Select --</option>
+                <option value="Independent">Independent — Self-governed, no external authority</option>
+                <option value="Bylaws">Has Bylaws — Operates under a written constitution</option>
+                <option value="Elders">Has Elders — Led by a recognized body of elders</option>
+                <option value="Governed by a Church">Governed by a Church — Under direct oversight of a covering church</option>
+                <option value="Other">Other — Custom or informal governance arrangement</option>
+              </select>
+            </div>
+            <div id="det-mc-gov-desc-wrap" style="grid-column:1/-1;display:none">
+              <div class="field">
+                <label>Micro-Church Gov. Notes</label>
+                <textarea id="det-mc-gov-desc" style="min-height:60px" placeholder="Describe the governance arrangement, bylaws reference, elders names, or covering church details..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Board Members</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:6px">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Name</div>
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Sobrenome</div>
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Role / Title</div>
+            <div></div>
+          </div>
+          <div class="board-list" id="boardList"></div>
+          <button class="add-board-btn" onclick="addBoardRow()">+ Add Board Member</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Installation Services -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div class="card-title" style="margin-bottom:0">Services for this Installation</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-teal btn-sm" onclick="openInstServiceModal('offer')">+ Offer a Service</button>
+          <button class="btn btn-purple btn-sm" onclick="openInstServiceModal('request')">+ Request a Service</button>
+        </div>
+      </div>
+      <div class="tab-pills">
+        <button class="tab-pill active" onclick="filterInstServices('all',this)">All</button>
+        <button class="tab-pill" onclick="filterInstServices('offer',this)">Offered</button>
+        <button class="tab-pill" onclick="filterInstServices('request',this)">Requested</button>
+      </div>
+      <div class="inst-service-grid" id="instServiceGrid">
+        <div class="empty-state" style="grid-column:1/-1;padding:30px 20px">
+          <div class="icon">⚡</div>
+          <h3>No services yet</h3>
+          <p style="font-size:13px">Offer or request services for this installation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spiritual Covering -->
+    <div id="instCoveringSection">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px">
+          <span style="width:3px;height:14px;background:var(--purple);border-radius:2px;display:inline-block"></span>
+          Spiritual Covering
+        </div>
+        <button class="btn btn-sm" style="background:rgba(155,111,212,.15);border:1px solid rgba(155,111,212,.3);color:#c4a0e8;font-family:var(--font-body);cursor:pointer;border-radius:8px;padding:5px 12px;font-size:12px" onclick="openModal('coveringModal')">
+          Change Church
+        </button>
+      </div>
+      <div id="coveringDisplay"></div>
+    </div>
+
+    <!-- Installation Members -->
+    <div class="card" style="margin-top:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+        <div class="card-title" style="margin-bottom:0">Members <span id="memberCountBadge" style="font-size:12px;color:var(--muted);font-weight:400;font-family:var(--font-body)"></span></div>
+        <button class="btn btn-gold btn-sm" onclick="addMemberSlot()" id="addMemberBtn">+ Add Member</button>
+      </div>
+      <div class="member-cap-bar">
+        <span style="font-size:12px;color:var(--muted)">Capacity</span>
+        <div class="member-cap-track"><div class="member-cap-fill" id="memberCapFill" style="width:0%"></div></div>
+        <span style="font-size:12px;color:var(--muted)" id="memberCapLabel">0 / 18</span>
+      </div>
+      <div class="member-roster" id="memberRoster"></div>
+    </div>
+  </div>
+
+  <!-- Covering Churches Network -->
+  <div class="card" style="margin-bottom:28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="card-title" style="margin-bottom:0">Covering Churches in Boca Raton</div>
+      <button class="btn btn-sm" style="background:rgba(155,111,212,.15);border:1px solid rgba(155,111,212,.3);color:#c4a0e8;font-family:var(--font-body);cursor:pointer;border-radius:8px;padding:5px 14px;font-size:12px" onclick="openAddChurchModal()">View Church List</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px" id="churchNetworkList"></div>
+  </div>
+
+  <!-- Instalações list -->
+  <div class="inst-list" id="installationsList">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🏛️</div>
+      <h3>No installations yet</h3>
+      <p style="font-size:13px">Click "New Installation" to add your first entity</p>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: GATHERINGS -->
+<div class="page" id="page-gatherings">
+  <div class="section-title">Pastoral Gatherings</div>
+  <div class="section-sub">Monthly events for pastors — Coffee, Prayer, Scripture, Communion</div>
+
+  <!-- Stats -->
+  <div class="gathering-stats-bar">
+    <div class="gathering-stat"><div class="gathering-stat-num" id="gs-total">0</div><div class="gathering-stat-label">Total</div></div>
+    <div class="gathering-stat" style="border-color:rgba(201,168,76,.3)"><div class="gathering-stat-num" style="color:var(--gold)" id="gs-coffee">0</div><div class="gathering-stat-label">Coffee</div></div>
+    <div class="gathering-stat" style="border-color:rgba(122,159,255,.3)"><div class="gathering-stat-num" style="color:#7a9fff" id="gs-prayer">0</div><div class="gathering-stat-label">Prayer</div></div>
+    <div class="gathering-stat" style="border-color:rgba(76,175,125,.3)"><div class="gathering-stat-num" style="color:#4caf7d" id="gs-scripture">0</div><div class="gathering-stat-label">Scripture</div></div>
+    <div class="gathering-stat" style="border-color:rgba(155,111,212,.3)"><div class="gathering-stat-num" style="color:#9b6fd4" id="gs-fellowship">0</div><div class="gathering-stat-label">Fellowship</div></div>
+    <div class="gathering-stat" style="border-color:rgba(224,82,82,.3)"><div class="gathering-stat-num" style="color:#e05252" id="gs-communion">0</div><div class="gathering-stat-label">Communion</div></div>
+    <div class="gathering-stat"><div class="gathering-stat-num" id="gs-people">0</div><div class="gathering-stat-label">People</div></div>
+  </div>
+
+  <!-- Type filter pills + Add -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="tab-pills" style="margin-bottom:0">
+      <button class="tab-pill active" onclick="filterGatherings('all',this)">All</button>
+      <button class="tab-pill" onclick="filterGatherings('coffee',this)">☕ Coffee</button>
+      <button class="tab-pill" onclick="filterGatherings('prayer-g',this)">🙏 Prayer</button>
+      <button class="tab-pill" onclick="filterGatherings('scripture-g',this)">📖 Scripture</button>
+      <button class="tab-pill" onclick="filterGatherings('fellowship-g',this)">🤝 Fellowship</button>
+      <button class="tab-pill" onclick="filterGatherings('communion-g',this)">🍷 Communion</button>
+    </div>
+    <button class="btn btn-gold btn-sm" onclick="openGatheringModal()">+ Add Gathering</button>
+  </div>
+
+  <div class="gathering-list" id="gatheringList">
+    <div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:13px" id="gatheringEmpty">No gatherings recorded yet. Add your first one above.</div>
+  </div>
+</div>
+
+<!-- PAGE: DOCTRINE -->
+<div class="page" id="page-doctrine">
+  <div class="section-title">Doctrinal Statement</div>
+  <div class="section-sub">Six essential beliefs affirmed by all churches in the Sou discípulo de Jesus - Boca Network</div>
+
+  <!-- Header banner -->
+  <div class="doctrine-header-card">
+    <div class="doctrine-network-name">Sou discípulo de Jesus - Boca Network</div>
+    <div class="doctrine-subtitle">These six doctrinal essentials form the theological foundation of our network. They are the non-negotiable convictions shared across all member churches — regardless of denomination, worship style, or secondary distinctives. Unity on these truths is required for network participation and spiritual covering.</div>
+  </div>
+
+  <!-- 6 Doctrine cards -->
+  <div class="doctrine-grid">
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">1</div>
+      <div class="doctrine-title">The Authority of Scripture</div>
+      <div class="doctrine-body">The Bible is the inspired, infallible Word of God — the supreme authority for faith and practice in the life of every believer and every church. Scripture alone is the final rule for doctrine, correction, and training in righteousness.</div>
+      <div class="doctrine-verse">2 Timóteo 3:16–17 &middot; 2 Pedro 1:20–21 &middot; Salmo 119:105</div>
+    </div>
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">2</div>
+      <div class="doctrine-title">The Triune God</div>
+      <div class="doctrine-body">There is one God, eternally existing in three persons — Father, Son, and Holy Spirit — equal in nature, distinct in person, and unified in purpose. God alone is Creator, Sustainer, and Lord of all things.</div>
+      <div class="doctrine-verse">Mateus 28:19 &middot; Deuteronômio 6:4 &middot; 2 Coríntios 13:14</div>
+    </div>
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">3</div>
+      <div class="doctrine-title">The Person & Work of Christ</div>
+      <div class="doctrine-body">Jesus Christ is fully God and fully man, born of a virgin, lived a sinless life, died on the cross as the atoning sacrifice for sin, rose bodily from the dead, ascended to the Father, and will return in glory to judge the living and the dead.</div>
+      <div class="doctrine-verse">João 1:1,14 &middot; Isaías 53:5 &middot; 1 Coríntios 15:3–4 &middot; Atos 1:11</div>
+    </div>
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">4</div>
+      <div class="doctrine-title">Salvation by Grace through Faith</div>
+      <div class="doctrine-body">Salvation is a gift of God's grace received through faith in Jesus Christ alone — not by human works or merit — resulting in regeneration, forgiveness of sins, justification before God, and the promise of eternal life.</div>
+      <div class="doctrine-verse">Efésios 2:8–9 &middot; Romanos 3:23–24 &middot; João 3:16 &middot; Tito 3:5</div>
+    </div>
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">5</div>
+      <div class="doctrine-title">The Holy Spirit & New Birth</div>
+      <div class="doctrine-body">Every believer is born again by the Holy Spirit, who indwells, seals, and empowers the Christian for holy living, spiritual gifts, and witness. The Spirit glorifies Christ and leads the church in truth, mission, and prayer.</div>
+      <div class="doctrine-verse">João 3:5–8 &middot; Romanos 8:9–11 &middot; Atos 1:8 &middot; 1 Coríntios 12:4–7</div>
+    </div>
+
+    <div class="doctrine-card">
+      <div class="doctrine-num">6</div>
+      <div class="doctrine-title">The Great Commission & the Church</div>
+      <div class="doctrine-body">The church is the body of Christ, called to worship, disciple, and multiply. Every local church and micro-church expression is commissioned to make disciples of all nations through baptism, teaching, fellowship, and Spirit-led mission.</div>
+      <div class="doctrine-verse">Mateus 28:18–20 &middot; Atos 2:42–47 &middot; Efésios 4:11–13</div>
+    </div>
+
+  </div>
+
+  <!-- Church agreement tracking -->
+  <div class="doctrine-agreement">
+    <div class="doctrine-agreement-title">Support Local Churches</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">We encourage every disciple to understand what it means to be the Church and to support all local churches that align with the essential doctrines. Local churches are not all the same — differences exist — but the essence of Christ must be present in each one. Pray, reflect, seek understanding, and walk the path of being a disciple and making disciples.</p>
+    <div id="doctrineChurchList"></div>
+  </div>
+</div>
+
+<!-- PAGE: ESSENTIALS -->
+<div class="page" id="page-essentials">
+  <div class="section-title">Essentials da Fé</div>
+  <div class="section-sub">Six foundational beliefs that form the theological basis of our network</div>
+
+  <div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:22px 28px;margin-bottom:28px;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="font-family:var(--font-head);font-size:20px;color:var(--gold);margin-bottom:8px">Sou discípulo de Jesus - Boca Network</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.75;max-width:760px">These six doctrinal essentials form the theological foundation of our network. They are the non-negotiable convictions shared across all member churches — regardless of denomination, worship style, or secondary distinctives. Unity on these truths is required for network participation and spiritual covering.</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;margin-bottom:32px">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">1</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">The Authority of Scripture</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">The Bible is the inspired, infallible Word of God — the supreme authority for faith and practice in the life of every believer and every church. Scripture alone is the final rule for doctrine, correction, and training in righteousness.</div>
+      <div style="font-size:11px;color:var(--text-dim,#6B6558);font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">2 Timothy 3:16–17 · 2 Peter 1:20–21 · Psalm 119:105</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">2</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">The Triune God</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">There is one God, eternally existing in three persons — Father, Son, and Holy Spirit — equal in nature, distinct in person, and unified in purpose. God alone is Creator, Sustainer, and Lord of all things.</div>
+      <div style="font-size:11px;font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">Matthew 28:19 · Deuteronomy 6:4 · 2 Corinthians 13:14</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">3</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">The Person & Work of Christ</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">Jesus Christ is fully God and fully man, born of a virgin, lived a sinless life, died on the cross as the atoning sacrifice for sin, rose bodily from the dead, ascended to the Father, and will return in glory to judge the living and the dead.</div>
+      <div style="font-size:11px;font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">John 1:1,14 · Isaiah 53:5 · 1 Corinthians 15:3–4 · Acts 1:11</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">4</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">Salvation by Grace through Faith</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">Salvation is a gift of God's grace received through faith in Jesus Christ alone — not by human works or merit — resulting in regeneration, forgiveness of sins, justification before God, and the promise of eternal life.</div>
+      <div style="font-size:11px;font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">Ephesians 2:8–9 · Romans 3:23–24 · John 3:16 · Titus 3:5</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">5</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">The Holy Spirit & New Birth</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">Every believer is born again by the Holy Spirit, who indwells, seals, and empowers the Christian for holy living, spiritual gifts, and witness. The Spirit glorifies Christ and leads the church in truth, mission, and prayer.</div>
+      <div style="font-size:11px;font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">John 3:5–8 · Romans 8:9–11 · Acts 1:8 · 1 Corinthians 12:4–7</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:border-color .2s;border-left:3px solid var(--gold)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='var(--gold)'">
+      <div style="position:absolute;top:16px;right:18px;font-family:var(--font-head);font-size:52px;color:var(--gold);opacity:.08;line-height:1">6</div>
+      <div style="font-family:var(--font-head);font-size:17px;color:var(--gold2);margin-bottom:12px">The Great Commission & the Church</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:16px">The church is the body of Christ, called to worship, disciple, and multiply. Every local church and micro-church expression is commissioned to make disciples of all nations through baptism, teaching, fellowship, and Spirit-led mission.</div>
+      <div style="font-size:11px;font-style:italic;border-top:1px solid var(--border);padding-top:10px;color:var(--muted)">Matthew 28:18–20 · Acts 2:42–47 · Ephesians 4:11–13</div>
+    </div>
+
+  </div>
+
+  <!-- Agreement tracking -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px">
+    <div class="card-title">Support Local Churches</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">We encourage every disciple to understand what it means to be the Church and to support all local churches that align with the essential doctrines. Local churches are not all the same — differences exist — but the essence of Christ must be present in each one. Pray, reflect, seek understanding, and walk the path of being a disciple and making disciples.</p>
+    <div id="essentialsChurchList">
+      <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">For questions, write to <a href="/cdn-cgi/l/email-protection#dfbdb0bcbebbb6acbcb6afb3bab1baaba8b0adb49fb8b2beb6b3f1bcb0b2" style="color:var(--gold)"><span class="__cf_email__" data-cfemail="a0c2cfc3c1c4c9d3c3c9d0ccc5cec5d4d7cfd2cbe0c7cdc1c9cc8ec3cfcd">[email&#160;protected]</span></a></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SERVICES (Global marketplace) -->
+<div class="page" id="page-services">
+  <div class="section-title">Services Marketplace</div>
+  <div class="section-sub">Browse, subscribe to, or publish your personal services</div>
+  <div class="row-center mb-16">
+    <button class="btn btn-gold" onclick="openModal('publishModal')">+ Publish Service</button>
+    <input style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);padding:7px 14px;outline:none;min-width:240px" placeholder="Search services..."/>
+  </div>
+  <div class="service-grid" id="serviceGrid"></div>
+</div>
+
+<!-- PAGE: CALLS -->
+<div class="page" id="page-calls">
+  <div class="section-title">Scheduled Calls</div>
+  <div class="section-sub">Manage your upcoming and past service calls</div>
+  <div class="row-center mb-16">
+    <button class="btn btn-gold" onclick="openModal('scheduleModal')">+ Schedule a Call</button>
+    <span class="text-muted" style="font-size:13px">Calls can be cancelled within 10 minutes of scheduled time if either party provides a reason.</span>
+  </div>
+  <div id="callsList"></div>
+</div>
+
+<!-- PAGE: PRAYER LIST -->
+<div class="page" id="page-prayer">
+  <div class="section-title">Prayer List</div>
+  <div class="section-sub">Names, requests and praises — a living record of your intercession</div>
+
+  <!-- Stats -->
+  <div class="prayer-stats">
+    <div class="prayer-stat"><div class="prayer-stat-num" id="ps-total">0</div><div class="prayer-stat-label">Total</div></div>
+    <div class="prayer-stat" style="border-color:rgba(122,159,255,.3)"><div class="prayer-stat-num" style="color:#7a9fff" id="ps-requests">0</div><div class="prayer-stat-label">Requests</div></div>
+    <div class="prayer-stat" style="border-color:rgba(76,175,125,.3)"><div class="prayer-stat-num" style="color:var(--green)" id="ps-praises">0</div><div class="prayer-stat-label">Praises</div></div>
+    <div class="prayer-stat" style="border-color:rgba(201,168,76,.3)"><div class="prayer-stat-num" id="ps-answered">0</div><div class="prayer-stat-label">Answered</div></div>
+  </div>
+
+  <!-- Filters + search -->
+  <div class="prayer-filters">
+    <button class="prayer-type-btn active" onclick="filterPrayer('all',this)">All</button>
+    <button class="prayer-type-btn" onclick="filterPrayer('context',this)">Contexto</button>
+    <button class="prayer-type-btn" onclick="filterPrayer('request',this)" style="">Requests</button>
+    <button class="prayer-type-btn" onclick="filterPrayer('praise',this)">Praises</button>
+    <input class="prayer-search" placeholder="Search by name or context..." oninput="searchPrayer(this.value)" id="prayerSearch"/>
+    <button class="btn btn-gold btn-sm" onclick="openModal('prayerModal')">+ Add Entry</button>
+  </div>
+
+  <div class="prayer-grid" id="prayerGrid">
+    <div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:13px" id="prayerEmpty">No prayer entries yet. Add your first one above.</div>
+  </div>
+</div>
+
+<!-- ═══ MEMBER DRAWER ═══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeMemberDrawer()"></div>
+<div class="member-drawer" id="memberDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawerTitle">Member Profile</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-teal btn-sm" onclick="saveMember()">Save</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeMemberDrawer()">✕</button>
+    </div>
+  </div>
+  <input type="hidden" id="drawerMemberId"/>
+
+  <div class="drawer-section">Identity</div>
+  <div class="drawer-grid">
+    <div class="field"><label>Name</label><input type="text" id="dm-fname" placeholder="First Name"/></div>
+    <div class="field"><label>Sobrenome</label><input type="text" id="dm-lname" placeholder="Last Name"/></div>
+    <div class="field"><label>Father's Name</label><input type="text" id="dm-father" placeholder="Nome completo do pai"/></div>
+    <div class="field"><label>Mother's Name</label><input type="text" id="dm-mother" placeholder="Nome completo da mãe"/></div>
+    <div class="field"><label>Date of Birth</label><input type="date" id="dm-dob"/></div>
+    <div class="field"><label>City of Birth</label><input type="text" id="dm-cob" placeholder="Cidade, País"/></div>
+    <div class="field drawer-full"><label>Role in Installation</label><input type="text" id="dm-role" placeholder="e.g. Member, Elder, Student, Parent..."/></div>
+  </div>
+
+  <div class="drawer-section">Purpose Levels</div>
+  <div class="drawer-grid-3">
+    <div class="field"><label>Results Level</label>
+      <select id="dm-results"><option value="">--</option><option>1 - Emerging</option><option>2 - Developing</option><option>3 - Competent</option><option>4 - Proficient</option><option>5 - Expert</option></select>
+    </div>
+    <div class="field"><label>Multiplication Level</label>
+      <select id="dm-multi"><option value="">--</option><option>1 - Self</option><option>2 - One-on-One</option><option>3 - Small Group</option><option>4 - Community</option><option>5 - Movement</option></select>
+    </div>
+    <div class="field"><label>Governance Level</label>
+      <select id="dm-gov"><option value="">--</option><option>1 - Self-governed</option><option>2 - Family</option><option>3 - Team</option><option>4 - Organization</option><option>5 - Society</option></select>
+    </div>
+  </div>
+
+  <div class="drawer-section">Roles</div>
+  <div class="tag-group" style="flex-wrap:wrap;gap:7px">
+    <input type="checkbox" class="tag-check" id="dm-r-father"><label class="tag-label" for="dm-r-father">Father</label>
+    <input type="checkbox" class="tag-check" id="dm-r-mother"><label class="tag-label" for="dm-r-mother">Mother</label>
+    <input type="checkbox" class="tag-check" id="dm-r-professional"><label class="tag-label" for="dm-r-professional">Professional</label>
+    <input type="checkbox" class="tag-check" id="dm-r-husband"><label class="tag-label" for="dm-r-husband">Husband</label>
+    <input type="checkbox" class="tag-check" id="dm-r-wife"><label class="tag-label" for="dm-r-wife">Wife</label>
+    <input type="checkbox" class="tag-check" id="dm-r-friend"><label class="tag-label" for="dm-r-friend">Friend</label>
+    <input type="checkbox" class="tag-check" id="dm-r-relative"><label class="tag-label" for="dm-r-relative">Relative</label>
+    <input type="checkbox" class="tag-check" id="dm-r-citizen"><label class="tag-label" for="dm-r-citizen">Citizen</label>
+    <input type="checkbox" class="tag-check" id="dm-r-disciple"><label class="tag-label" for="dm-r-disciple">Disciple</label>
+  </div>
+
+  <div class="drawer-section">Atributos Essentials</div>
+  <div class="drawer-grid">
+    <div class="slider-group"><label>Truth Level <span id="dm-truth-v">5</span></label><input class="attr-slider" type="range" min="1" max="10" value="5" oninput="document.getElementById('dm-truth-v').textContent=this.value" id="dm-truth"/></div>
+    <div class="slider-group"><label>Love Level <span id="dm-love-v">5</span></label><input class="attr-slider" type="range" min="1" max="10" value="5" oninput="document.getElementById('dm-love-v').textContent=this.value" id="dm-love"/></div>
+    <div class="field drawer-full"><label>Credentials</label><textarea id="dm-creds" style="height:56px" placeholder="Degrees, licenses, certifications..."></textarea></div>
+  </div>
+
+  <div class="drawer-section">Domains &amp; Expertise</div>
+  <div class="drawer-grid">
+    <div class="field"><label>Domains</label><input type="text" id="dm-domains" placeholder="Architecture, Tech..."/></div>
+    <div class="field"><label>Expertise</label><input type="text" id="dm-expertise" placeholder="BIM, Design..."/></div>
+    <div class="field drawer-full"><label>Industries</label><input type="text" id="dm-industries" placeholder="Construction, Education..."/></div>
+  </div>
+
+  <div class="drawer-section">Disciple Practices (1–5)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="slider-group"><label>Prayer <span id="dmp-prayer-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-prayer-v').textContent=this.value" id="dmp-prayer"/></div>
+    <div class="slider-group"><label>Scripture <span id="dmp-scripture-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-scripture-v').textContent=this.value" id="dmp-scripture"/></div>
+    <div class="slider-group"><label>Fellowship <span id="dmp-fellowship-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-fellowship-v').textContent=this.value" id="dmp-fellowship"/></div>
+    <div class="slider-group"><label>Service <span id="dmp-service-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-service-v').textContent=this.value" id="dmp-service"/></div>
+    <div class="slider-group"><label>Generosity <span id="dmp-generosity-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-generosity-v').textContent=this.value" id="dmp-generosity"/></div>
+    <div class="slider-group"><label>Communion <span id="dmp-communion-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-communion-v').textContent=this.value" id="dmp-communion"/></div>
+    <div class="slider-group"><label>Solitude <span id="dmp-solitude-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-solitude-v').textContent=this.value" id="dmp-solitude"/></div>
+    <div class="slider-group"><label>Fasting <span id="dmp-fasting-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-fasting-v').textContent=this.value" id="dmp-fasting"/></div>
+    <div class="slider-group"><label>Discipleship <span id="dmp-discipleship-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-discipleship-v').textContent=this.value" id="dmp-discipleship"/></div>
+    <div class="slider-group"><label>Shabbath–Sunday <span id="dmp-shabbath-v">1</span></label><input class="attr-slider" type="range" min="1" max="5" value="1" oninput="document.getElementById('dmp-shabbath-v').textContent=this.value" id="dmp-shabbath"/></div>
+  </div>
+
+  <div class="drawer-section">Health Indicators (1–5)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="slider-group"><label>Spiritual Maturity <span id="dmh-spirit-v">3</span></label><input class="attr-slider" type="range" min="1" max="5" value="3" oninput="document.getElementById('dmh-spirit-v').textContent=this.value" id="dmh-spirit"/></div>
+    <div class="slider-group"><label>Physical Health <span id="dmh-phys-v">3</span></label><input class="attr-slider" type="range" min="1" max="5" value="3" oninput="document.getElementById('dmh-phys-v').textContent=this.value" id="dmh-phys"/></div>
+    <div class="slider-group"><label>Mental Health <span id="dmh-mental-v">3</span></label><input class="attr-slider" type="range" min="1" max="5" value="3" oninput="document.getElementById('dmh-mental-v').textContent=this.value" id="dmh-mental"/></div>
+    <div class="slider-group"><label>Financial Health <span id="dmh-fin-v">3</span></label><input class="attr-slider" type="range" min="1" max="5" value="3" oninput="document.getElementById('dmh-fin-v').textContent=this.value" id="dmh-fin"/></div>
+    <div class="slider-group"><label>Family Health <span id="dmh-family-v">3</span></label><input class="attr-slider" type="range" min="1" max="5" value="3" oninput="document.getElementById('dmh-family-v').textContent=this.value" id="dmh-family"/></div>
+  </div>
+
+  <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+    <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="deleteMember()">Delete Member</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="closeMemberDrawer()">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveMember()">Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- New Installation Modal -->
+<div class="modal-overlay" id="newInstModal">
+  <div class="modal" style="width:640px">
+    <div class="modal-title">New Installation</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-grid-2">
+        <div class="field"><label>Installation ID</label><input type="text" id="new-inst-id" placeholder="e.g. INST-001" oninput="this.value=this.value.toUpperCase()"/></div>
+        <div class="field"><label>Entity Name</label><input type="text" id="new-inst-name" placeholder="Full name of entity"/></div>
+      </div>
+      <div class="field"><label>Entity Type</label>
+        <select id="new-inst-type">
+          <option value="">-- Select Type --</option>
+          <option value="Household">Household</option>
+          <option value="Church">Church</option>
+          <option value="Business">Business</option>
+          <option value="NGO">NGO</option>
+          <option value="Elementary School">Elementary School</option>
+          <option value="Middle School">Middle School</option>
+          <option value="High School">High School</option>
+          <option value="College">College</option>
+          <option value="University">University</option>
+        </select>
+      </div>
+      <div class="form-grid-2">
+        <div class="field"><label>Responsible First Name</label><input type="text" id="new-inst-fname" placeholder="First Name"/></div>
+        <div class="field"><label>Responsible Last Name</label><input type="text" id="new-inst-lname" placeholder="Last Name"/></div>
+      </div>
+      <div class="field"><label>Governance Model</label>
+        <select id="new-inst-gov">
+          <option value="">-- Select --</option>
+          <option value="Sole Leadership">Sole Leadership</option>
+          <option value="Elder Board">Elder Board</option>
+          <option value="Congregational">Congregational</option>
+          <option value="Episcopal">Episcopal</option>
+          <option value="Presbyterian">Presbyterian</option>
+          <option value="Corporate Board">Corporate Board</option>
+          <option value="Cooperative">Cooperative</option>
+          <option value="Advisory Board">Advisory Board</option>
+          <option value="Flat / Self-managed">Flat / Self-managed</option>
+          <option value="Family Council">Family Council</option>
+          <option value="Trustee Model">Trustee Model</option>
+          <option value="Academic Senate">Academic Senate</option>
+          <option value="Student Government">Student Government</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+      <div class="field"><label>City</label><input type="text" id="new-inst-city" placeholder="e.g. Boca Raton, FL"/></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Micro-Church Government</label>
+        <select id="new-inst-mc-gov">
+          <option value="">-- Select --</option>
+          <option value="Independent">Independent — Self-governed, no external authority</option>
+          <option value="Bylaws">Has Bylaws — Operates under a written constitution</option>
+          <option value="Elders">Has Elders — Led by a recognized body of elders</option>
+          <option value="Governed by a Church">Governed by a Church — Under direct oversight of a covering church</option>
+          <option value="Other">Other — Custom or informal governance arrangement</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('newInstModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="createInstallation()">Create Installation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Installation Service Modal -->
+<div class="modal-overlay" id="instServiceModal">
+  <div class="modal">
+    <div class="modal-title" id="instServiceModalTitle">Offer a Service</div>
+    <input type="hidden" id="instSvcType"/>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="field" style="grid-column:1/-1"><label>Service Title</label><input type="text" id="isvc-title" placeholder="e.g. Community Mentoring Program"/></div>
+      <div class="form-grid-2">
+        <div class="field"><label>Category</label>
+          <select id="isvc-cat">
+            <option>Education</option><option>Counseling</option><option>Legal</option><option>Financial</option>
+            <option>Health</option><option>Technology</option><option>Construction</option><option>Social Work</option>
+            <option>Spiritual</option><option>Administrative</option><option>Creative</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Price / Terms</label><input type="text" id="isvc-price" placeholder="e.g. Free, $100/month, Volunteer"/></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="isvc-desc" placeholder="Describe this service — what is offered or needed, who benefits, and any requirements..."></textarea></div>
+      <div class="form-grid-2">
+        <div class="field"><label>Availability / Timeline</label><input type="text" id="isvc-avail" placeholder="e.g. Ongoing, Q2 2026, Weekly"/></div>
+        <div class="field"><label>Contact / Coordinator</label><input type="text" id="isvc-contact" placeholder="Name or email"/></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('instServiceModal')">Cancel</button>
+      <button class="btn btn-gold" id="instSvcSubmitBtn" onclick="submitInstService()">Publish Service</button>
+    </div>
+  </div>
+</div>
+
+<!-- Prayer Entry Modal -->
+<div class="modal-overlay" id="prayerModal">
+  <div class="modal" style="width:500px">
+    <div class="modal-title" id="prayerModalTitle">Add Prayer Entry</div>
+    <input type="hidden" id="pm-edit-id"/>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="field"><label>Name</label><input type="text" id="pm-name" placeholder="Person's name or situation..."/></div>
+      <div class="field"><label>Type</label>
+        <select id="pm-type">
+          <option value="context">Context — background or situational note</option>
+          <option value="request">Request — interceding for a need</option>
+          <option value="praise">Praise — thanksgiving or answered prayer</option>
+        </select>
+      </div>
+      <div class="field"><label>Context / Request / Praise</label>
+        <textarea id="pm-context" style="min-height:90px" placeholder="Describe the prayer need, praise report, or context..."></textarea>
+      </div>
+      <div class="form-grid-2">
+        <div class="field"><label>Date</label><input type="date" id="pm-date"/></div>
+        <div class="field" style="justify-content:flex-end;padding-top:20px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)">
+            <input type="checkbox" id="pm-answered" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer"/>
+            Mark as Answered
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePrayerModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="savePrayerEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- Covering Church Selector Modal -->
+<div class="modal-overlay" id="coveringModal">
+  <div class="modal" style="width:520px">
+    <div class="modal-title">Atribuir Spiritual Covering</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Select a covering church from the Boca Raton network for this installation.</p>
+    <input type="text" id="coveringSearch" oninput="openCoveringModal()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:13px;padding:8px 12px;outline:none;width:100%;margin-bottom:10px;transition:border-color .2s" placeholder="Search by name or pastor..."/>
+    <div id="coveringChurchList" style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('coveringModal')">Cancel</button>
+      <button class="btn btn-ghost" style="color:var(--red);border-color:var(--red)" onclick="removeCovering()">Remove Covering</button>
+    </div>
+  </div>
+</div>
+
+<!-- Covering Church Picker Modal (pick from official list) -->
+<div class="modal-overlay" id="addChurchModal">
+  <div class="modal" style="width:540px">
+    <div class="modal-title">Official Church Network</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:14px">All 33 churches in the Sou discípulo de Jesus - Boca Network. Click any church to assign it as covering for the active installation, or close to dismiss.</p>
+    <input type="text" id="coveringSearchAll" oninput="renderAllChurchPicker(this.value)"
+      style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:13px;padding:8px 12px;outline:none;width:100%;margin-bottom:12px;transition:border-color .2s"
+      placeholder="Search by church name or pastor..."/>
+    <div id="allChurchPickerList" style="display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('addChurchModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pastoral Gathering Modal -->
+<div class="modal-overlay" id="gatheringModal">
+  <div class="modal" style="width:540px">
+    <div class="modal-title" id="gatheringModalTitle">Add Gathering</div>
+    <input type="hidden" id="gm-edit-id"/>
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div class="field"><label>Gathering Type</label>
+        <select id="gm-type">
+          <option value="coffee">☕ Coffee with Pastors</option>
+          <option value="prayer-g">🙏 Prayer Gathering</option>
+          <option value="scripture-g">📖 Scripture Study</option>
+          <option value="fellowship-g">🤝 Fellowship Gathering</option>
+          <option value="communion-g">🍷 Communion Service</option>
+        </select>
+      </div>
+      <div class="form-grid-2">
+        <div class="field"><label>Date</label><input type="date" id="gm-date"/></div>
+        <div class="field"><label>Horário</label><input type="time" id="gm-time" value="08:00"/></div>
+      </div>
+      <div class="field"><label>Address / Location</label><input type="text" id="gm-address" placeholder="ex. Rua das Flores, 123, Boca Raton, FL"/></div>
+      <div class="field"><label>Descrição Breve</label><textarea id="gm-desc" style="min-height:80px" placeholder="Brief description of the gathering, theme or agenda..."></textarea></div>
+      <div class="field"><label>Number of People</label><input type="number" id="gm-people" min="1" placeholder="ex. 12"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeGatheringModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveGathering()">Save Gathering</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fellowship Event Modal -->
+<div class="modal-overlay" id="fellowshipModal">
+  <div class="modal" style="width:480px">
+    <div class="modal-title">Add Fellowship Event</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="field"><label>Date</label><input type="date" id="fe-date"/></div>
+      <div class="field"><label>Descrição Breve</label><input type="text" id="fe-desc" placeholder="e.g. Small group Bible study at home"/></div>
+      <div class="field"><label>Number of People</label><input type="number" id="fe-num" min="1" placeholder="ex. 8"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('fellowshipModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="addFellowshipEvent()">Add Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publish Personal Service Modal -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal">
+    <div class="modal-title">Publish Service</div>
+    <div class="form-grid-2">
+      <div class="field" style="grid-column:1/-1"><label>Service Title</label><input type="text" placeholder="ex. Consultoria de Design Arquitetônico"/></div>
+      <div class="field" style="grid-column:1/-1"><label>Description</label><textarea placeholder="Descreva o que você oferece, para quem é e o que terão..."></textarea></div>
+      <div class="field"><label>Preço (USD)</label><input type="number" placeholder="150"/></div>
+      <div class="field"><label>Duração</label><select><option>30 min</option><option>60 min</option><option>90 min</option><option>2 hours</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>Entregáveis</label><input type="text" placeholder="ex. Relatório PDF, sessão de 1h, e-mail de acompanhamento"/></div>
+      <div class="field" style="grid-column:1/-1"><label>Métricas de Qualidade</label><input type="text" placeholder="ex. Taxa de resposta, Avaliação do cliente, Taxa de conclusão"/></div>
+      <div class="field" style="grid-column:1/-1"><label>Credenciais Necessárias</label><input type="text" placeholder="ex. Arquiteto Licenciado, CREA-SP 123456"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('publishModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="publishService()">Publish Service</button>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule Call Modal -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <div class="modal-title">Agendar Chamada</div>
+    <div class="form-grid-2">
+      <div class="field"><label>Selecionar Serviço</label>
+        <select id="callService">
+          <option>Consultoria Arquitetônica</option>
+          <option>Sessão de Estratégia BIM</option>
+          <option>Chamada de Coaching de Vida</option>
+        </select>
+      </div>
+      <div class="field"><label>Professional</label><input type="text" placeholder="Buscar por nome..."/></div>
+      <div class="field"><label>Date</label><input type="date"/></div>
+      <div class="field"><label>Horário</label><input type="time" value="10:00"/></div>
+      <div class="field" style="grid-column:1/-1"><label>Notas / Pauta</label><textarea placeholder="O que você gostaria de discutir?"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('scheduleModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="scheduleCall()">Confirmar Chamada</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Call Modal -->
+<div class="modal-overlay" id="cancelModal">
+  <div class="modal">
+    <div class="modal-title">Cancel Call</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Per platform policy, cancellations must include a reason. This call is within the 10-minute window.</p>
+    <div class="field"><label>Reason for Cancellation</label><textarea id="cancelReason" placeholder="Please explain why you are cancelling this call..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('cancelModal')">Keep Call</button>
+      <button class="btn btn-danger" onclick="confirmCancel()">Confirm Cancellation</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══ STATE ═══
+let cancelTarget = null;
+let installations = [];
+let activeInstId = null;
+let instServiceFilter = 'all';
+
+const ENTITY_TYPE_CLASS = {
+  'Household':'type-household','Church':'type-church','Business':'type-business',
+  'NGO':'type-ngo','Elementary School':'type-school','Middle School':'type-school',
+  'High School':'type-school','College':'type-college','University':'type-university'
+};
+
+const dims = ['Spiritual','Physical','Mental','Financial','Family'];
+
+const services = [
+  {title:'Consultoria Arquitetônica',category:'Design',price:150,duration:'60 min',desc:'Revisão completa de projeto residencial com orientação de licenças e verificação de conformidade.',deliverables:'Relatório escrito + desenhos revisados',metrics:'4.9 ⭐ · 98% resposta · Licenciado FL',subs:12},
+  {title:'Sessão de Estratégia BIM',category:'Tecnologia',price:200,duration:'90 min',desc:'Auditoria de fluxo BIM para escritórios em transição para entrega baseada em modelo.',deliverables:'PDF de plano de ação + acompanhamento de 30 dias',metrics:'4.8 ⭐ · Especialista · Certificado Revit',subs:8},
+  {title:'Chamada de Coaching de Vida',category:'Crescimento',price:80,duration:'45 min',desc:'Sessão estruturada de coaching cobrindo visão, metas, avaliação do ciclo de vida e planejamento de ação.',deliverables:'Notas da sessão + planilha de visão',metrics:'5.0 ⭐ · Coach Certificado ICF',subs:24},
+  {title:'Revisão de Desenvolvimento de Negócios',category:'Business',price:300,duration:'2 horas',desc:'Análise profunda do negócio de construção personalizada — pipeline, precificação e posicionamento.',deliverables:'Apresentação + roteiro de 90 dias',metrics:'4.7 ⭐ · 15 anos de experiência',subs:5},
+];
+
+const calls = [
+  {id:1,name:'Maria Santos',service:'Chamada de Coaching de Vida',date:'2026-03-18',time:'10:00 AM',status:'scheduled',avatar:'M'},
+  {id:2,name:'Carlos Vega',service:'Sessão de Estratégia BIM',date:'2026-03-16',time:'2:00 PM',status:'live',avatar:'C'},
+  {id:3,name:'Ana Ribeiro',service:'Consultoria Arquitetônica',date:'2026-03-10',time:'9:00 AM',status:'cancelled',avatar:'A',reason:'O cliente teve um conflito de agenda com seu contratante.'},
+];
+
+// ═══ NAVIGATION ═══
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'disciple') setTimeout(drawRadar, 60);
+  if (id === 'prayer') renderPrayerList();
+  if (id === 'gatherings') renderGatherings();
+  if (id === 'installations') { renderChurchNetwork(); renderInstallationsList(); }
+  if (id === 'doctrine') renderDoctrineChurchList();
+}
+
+// ═══ MODALS ═══
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ═══ TOAST ═══
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderColor = color || 'var(--green)';
+  t.style.color = color || 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══ LIFECYCLE ═══
+function buildLifecycle() {
+  const g = document.getElementById('lcGrid');
+  const stages = ['Teen', '20s', '30s', '40s', '50s', '60s', '70+'];
+  stages.forEach(stage => {
+    const d = document.createElement('div');
+    d.className = 'lc-btn'; d.textContent = stage;
+    d.onclick = function () {
+      document.querySelectorAll('.lc-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+    };
+    g.appendChild(d);
+  });
+}
+
+// ═══ DIMENSIONS ═══
+function buildDimRows() {
+  const c = document.getElementById('dimRows');
+  dims.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'dim-grid';
+    row.innerHTML = `<div class="dim-label">${d}</div>
+      <input class="dim-input" type="text" placeholder="Vision..."/>
+      <input class="dim-input" type="text" placeholder="Target..."/>
+      <input class="dim-input" type="text" placeholder="Actual..."/>`;
+    c.appendChild(row);
+  });
+}
+
+// ═══ PERSONAL SERVICES ═══
+function buildServices() {
+  const g = document.getElementById('serviceGrid');
+  services.forEach(s => {
+    g.innerHTML += `<div class="service-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <span class="service-badge">${s.category}</span>
+        <span style="font-size:11px;color:var(--muted)">${s.duration}</span>
+      </div>
+      <div style="font-weight:600;font-size:16px;margin-bottom:6px">${s.title}</div>
+      <div style="color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:12px">${s.desc}</div>
+      <div class="price-tag">$${s.price}<span>/sessão</span></div>
+      <div class="metric-row"><span class="metric">📦 ${s.deliverables}</span></div>
+      <div class="metric-row">
+        <span class="metric">${s.metrics}</span>
+        <span class="metric">${s.subs} subscribers</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-gold btn-sm" onclick="showToast('Inscrito em ${s.title}!')">Subscribe</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('scheduleModal')">Book Call</button>
+      </div>
+    </div>`;
+  });
+}
+
+// ═══ CALLS ═══
+function buildCalls() {
+  const c = document.getElementById('callsList');
+  calls.forEach(call => {
+    const statusClass = { scheduled: 'status-scheduled', live: 'status-live', cancelled: 'status-cancelled' }[call.status];
+    const statusLabel = { scheduled: 'Scheduled', live: 'Ao Vivo', cancelled: 'Cancelled' }[call.status];
+    const cancelBtn = call.status === 'scheduled' ? `<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="requestCancel(${call.id})">Cancel</button>` : '';
+    const reasonHtml = call.reason ? `<div class="cancel-reason" style="margin-top:10px"><span style="font-size:11px;color:var(--muted)">Cancellation reason: </span><span style="font-size:12px">${call.reason}</span></div>` : '';
+    c.innerHTML += `<div class="call-card" id="call-${call.id}">
+      <div class="call-avatar">${call.avatar}</div>
+      <div class="call-info">
+        <div class="call-name">${call.name}</div>
+        <div class="call-meta">${call.service} · ${call.date} at ${call.time}</div>
+        ${reasonHtml}
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="call-status ${statusClass}">${statusLabel}</span>
+        ${cancelBtn}
+      </div>
+    </div>`;
+  });
+}
+
+function requestCancel(id) { cancelTarget = id; openModal('cancelModal'); }
+
+function confirmCancel() {
+  const reason = document.getElementById('cancelReason').value.trim();
+  if (!reason) { alert('Please provide a reason for cancellation.'); return; }
+  const card = document.getElementById('call-' + cancelTarget);
+  if (card) {
+    const status = card.querySelector('.call-status');
+    const btn = card.querySelector('.btn-ghost');
+    status.className = 'call-status status-cancelled';
+    status.textContent = 'Cancelado';
+    if (btn) btn.remove();
+    const info = card.querySelector('.call-info');
+    if (!info.querySelector('.cancel-reason')) {
+      const r = document.createElement('div');
+      r.className = 'cancel-reason';
+      r.style.marginTop = '10px';
+      r.innerHTML = `<span style="font-size:11px;color:var(--muted)">Cancellation reason: </span><span style="font-size:12px">${reason}</span>`;
+      info.appendChild(r);
+    }
+  }
+  closeModal('cancelModal');
+  document.getElementById('cancelReason').value = '';
+  showToast('Call cancelled successfully');
+}
+
+function publishService() { closeModal('publishModal'); showToast('Service published to marketplace!'); }
+function scheduleCall() { closeModal('scheduleModal'); showToast('Call scheduled! Check your Calls tab.'); }
+
+// ═══════════════════════════════
+// INSTALLATIONS ENGINE
+// ═══════════════════════════════
+
+function getTypeClass(type) {
+  return ENTITY_TYPE_CLASS[type] || 'type-business';
+}
+
+
+
+
+
+function renderInstallationsList() {
+  var list = document.getElementById('installationsList');
+  if (installations.length === 0) {
+    list.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">&#127963;</div><h3>No installations yet</h3><p style="font-size:13px">Click New Installation to add your first entity</p></div>';
+    return;
+  }
+  list.innerHTML = installations.map(function(inst) {
+    var tc           = getTypeClass(inst.type);
+    var boardCount   = (inst.board    || []).filter(function(b){ return b.firstName || b.lastName; }).length;
+    var offerCount   = (inst.services || []).filter(function(s){ return s.svcType === 'offer'; }).length;
+    var requestCount = (inst.services || []).filter(function(s){ return s.svcType === 'request'; }).length;
+    var memberCount  = (inst.members  || []).length;
+    var isActive     = activeInstId === inst.id;
+    var coveringCh   = inst.coveringChurchId ? coveringChurches.find(function(x){ return x.id === inst.coveringChurchId; }) : null;
+    var boardChip    = boardCount   ? '<span class="inst-chip">&#128101; ' + boardCount + ' membro do conselho' + (boardCount !== 1 ? 's' : '') + '</span>' : '';
+    var memberChip   = memberCount  ? '<span class="inst-chip">&#128100; ' + memberCount + ' membro' + (memberCount !== 1 ? 's' : '') + '</span>' : '';
+    var coveringChip = coveringCh   ? '<span class="inst-chip" style="color:#c4a0e8;background:rgba(155,111,212,.08);border:1px solid rgba(155,111,212,.2)">&#10013; ' + coveringCh.name + '</span>' : '';
+    var offerChip    = offerCount   ? '<span class="inst-chip" style="color:var(--green)">&#10022; ' + offerCount + ' oferta' + (offerCount !== 1 ? 's' : '') + '</span>' : '';
+    var requestChip  = requestCount ? '<span class="inst-chip" style="color:#7a9fff">&#9672; ' + requestCount + ' pedido' + (requestCount !== 1 ? 's' : '') + '</span>' : '';
+    var govLine      = inst.gov     ? '<div style="font-size:11px;color:var(--muted);margin-top:4px">Gov: ' + inst.gov + '</div>' : '';
+    var mcGovBadge   = inst.mcGov   ? '<div style="margin-top:6px">' + getMcGovBadge(inst.mcGov) + '</div>' : '';
+    var responsible  = (inst.fname || inst.lname) ? ((inst.fname || '') + ' ' + (inst.lname || '')).trim() + ' — Responsible' : 'No responsible assigned';
+    var activeClass  = isActive ? ' active-inst' : '';
+    return '<div class="inst-card' + activeClass + '" data-iid="' + inst.id + '" onclick="openInstDetail(this.dataset.iid)">' +
+      '<div class="inst-card-top">' +
+        '<span class="inst-id">' + inst.id + '</span>' +
+        '<span class="inst-type-badge ' + tc + '">' + (inst.type || 'Unset') + '</span>' +
+      '</div>' +
+      '<div class="inst-name">' + (inst.name || '(No name)') + '</div>' +
+      '<div class="inst-responsible">' + responsible + '</div>' +
+      (inst.city ? '<div style="font-size:11px;color:var(--muted);margin-top:2px">&#128205; ' + inst.city + '</div>' : '') +
+      govLine +
+      mcGovBadge +
+      '<div class="inst-meta">' + boardChip + memberChip + coveringChip + offerChip + requestChip + '</div>' +
+      '<div class="inst-actions">' +
+        '<button class="btn btn-gold btn-sm" data-iid="' + inst.id + '" onclick="event.stopPropagation();openInstDetail(this.dataset.iid)">Editar</button>' +
+        '<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" data-iid="' + inst.id + '" onclick="event.stopPropagation();deleteInstallation(this.dataset.iid)">Excluir</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function createInstallation() {
+  const id = document.getElementById('new-inst-id').value.trim();
+  const name = document.getElementById('new-inst-name').value.trim();
+  const type = document.getElementById('new-inst-type').value;
+  const fname = document.getElementById('new-inst-fname').value.trim();
+  const lname = document.getElementById('new-inst-lname').value.trim();
+  const gov = document.getElementById('new-inst-gov').value;
+
+  if (!id) { alert('Installation ID is required.'); return; }
+  if (!name) { alert('Entity Name is required.'); return; }
+  if (!type) { alert('Please select an Entity Type.'); return; }
+  if (installations.find(i => i.id === id)) { alert('Installation ID already exists. Use a unique ID.'); return; }
+
+  const city = document.getElementById('new-inst-city').value.trim();
+  const mcGov = document.getElementById('new-inst-mc-gov').value;
+  const inst = { id, name, type, fname, lname, gov, city, mcGov, board: [], services: [] };
+  installations.push(inst);
+
+  // Clear form
+  ['new-inst-id','new-inst-name','new-inst-fname','new-inst-lname','new-inst-city'].forEach(f => document.getElementById(f).value = '');
+  document.getElementById('new-inst-mc-gov').value = '';
+  document.getElementById('new-inst-type').value = '';
+  document.getElementById('new-inst-gov').value = '';
+
+  closeModal('newInstModal');
+  renderInstallationsList();
+  openInstDetail(id);
+  showToast(`Installation "${name}" created!`);
+}
+
+function deleteInstallation(id) {
+  if (!confirm('Excluir this installation? This cannot be undone.')) return;
+  installations = installations.filter(i => i.id !== id);
+  if (activeInstId === id) {
+    activeInstId = null;
+    closeInstDetail();
+  }
+  renderInstallationsList();
+  showToast('Installation deleted', 'var(--red)');
+}
+
+function openInstDetail(id) {
+  const inst = installations.find(i => i.id === id);
+  if (!inst) return;
+  activeInstId = id;
+
+  // Fill detail panel
+  document.getElementById('detailPanelTitle').textContent = inst.name;
+  document.getElementById('detailPanelId').textContent = 'Installation ID: ' + inst.id;
+  var mcBadgeEl = document.getElementById('detailMcGovBadge');
+  if (mcBadgeEl) mcBadgeEl.innerHTML = inst.mcGov ? getMcGovBadge(inst.mcGov) : '';
+  document.getElementById('det-name').value = inst.name || '';
+  document.getElementById('det-city').value  = inst.city || '';
+  if (document.getElementById('det-mc-gov')) { document.getElementById('det-mc-gov').value = inst.mcGov || ''; updateMcGovDesc(); }
+  if (document.getElementById('det-mc-gov-desc')) document.getElementById('det-mc-gov-desc').value = inst.mcGovDesc || '';
+  document.getElementById('det-type').value = inst.type || '';
+  document.getElementById('det-fname').value = inst.fname || '';
+  document.getElementById('det-lname').value = inst.lname || '';
+  document.getElementById('det-gov').value = inst.gov || '';
+
+  // Board
+  renderBoardList(inst.board || []);
+
+  // Services
+  renderInstServices(inst.services || []);
+
+  // Members
+  renderMemberRoster(inst.members || []);
+
+  // Covering
+  renderCoveringDisplay(inst);
+
+  document.getElementById('instDetailPanel').classList.add('open');
+  renderInstallationsList();
+  document.getElementById('instDetailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeInstDetail() {
+  activeInstId = null;
+  document.getElementById('instDetailPanel').classList.remove('open');
+  renderInstallationsList();
+}
+
+function saveInstallation() {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst) return;
+  inst.name = document.getElementById('det-name').value.trim() || inst.name;
+  inst.type = document.getElementById('det-type').value;
+  inst.city  = document.getElementById('det-city').value.trim();
+  inst.fname = document.getElementById('det-fname').value.trim();
+  inst.lname = document.getElementById('det-lname').value.trim();
+  inst.gov = document.getElementById('det-gov').value;
+  // Save board
+  inst.board = collectBoardData();
+  document.getElementById('detailPanelTitle').textContent = inst.name;
+  renderInstallationsList();
+  showToast('Installation saved!');
+}
+
+function updateDetailBadge() {} // reserved
+
+// ─── BOARD ───
+function renderBoardList(board) {
+  const list = document.getElementById('boardList');
+  list.innerHTML = '';
+  if (!board || board.length === 0) {
+    addBoardRow();
+    return;
+  }
+  board.forEach(m => addBoardRow(m.firstName, m.lastName, m.role));
+}
+
+function addBoardRow(firstName = '', lastName = '', role = '') {
+  const list = document.getElementById('boardList');
+  const row = document.createElement('div');
+  row.className = 'board-row';
+  row.innerHTML = `
+    <input type="text" placeholder="First Name" value="${firstName}"/>
+    <input type="text" placeholder="Last Name" value="${lastName}"/>
+    <input type="text" placeholder="Role / Title" value="${role}"/>
+    <button class="board-remove" onclick="this.closest('.board-row').remove()" title="Remove">✕</button>`;
+  list.appendChild(row);
+}
+
+function collectBoardData() {
+  return Array.from(document.querySelectorAll('#boardList .board-row')).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { firstName: inputs[0].value.trim(), lastName: inputs[1].value.trim(), role: inputs[2].value.trim() };
+  }).filter(m => m.firstName || m.lastName);
+}
+
+// ─── INSTALLATION SERVICES ───
+function openInstServiceModal(type) {
+  if (!activeInstId) return;
+  document.getElementById('instSvcType').value = type;
+  document.getElementById('instServiceModalTitle').textContent = type === 'offer' ? '✦ Offer a Service' : '◈ Request a Service';
+  document.getElementById('instSvcSubmitBtn').textContent = type === 'offer' ? 'Publish Offering' : 'Submit Request';
+  document.getElementById('instSvcSubmitBtn').className = `btn btn-sm ${type === 'offer' ? 'btn-teal' : 'btn-purple'}`;
+  ['isvc-title','isvc-price','isvc-desc','isvc-avail','isvc-contact'].forEach(f => document.getElementById(f).value = '');
+  openModal('instServiceModal');
+}
+
+function submitInstService() {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst) return;
+  const title = document.getElementById('isvc-title').value.trim();
+  if (!title) { alert('Service title is required.'); return; }
+  const svc = {
+    svcType: document.getElementById('instSvcType').value,
+    title,
+    category: document.getElementById('isvc-cat').value,
+    price: document.getElementById('isvc-price').value.trim(),
+    desc: document.getElementById('isvc-desc').value.trim(),
+    avail: document.getElementById('isvc-avail').value.trim(),
+    contact: document.getElementById('isvc-contact').value.trim(),
+    id: Date.now()
+  };
+  if (!inst.services) inst.services = [];
+  inst.services.push(svc);
+  closeModal('instServiceModal');
+  renderInstServices(inst.services);
+  renderInstallationsList();
+  showToast(svc.svcType === 'offer' ? 'Service offering published!' : 'Service request submitted!', svc.svcType === 'offer' ? 'var(--teal)' : 'var(--purple)');
+}
+
+function deleteInstService(id) {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst) return;
+  inst.services = inst.services.filter(s => s.id !== id);
+  renderInstServices(inst.services);
+  renderInstallationsList();
+  showToast('Service removed');
+}
+
+function filterInstServices(filter, el) {
+  instServiceFilter = filter;
+  document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active','active-teal','active-purple'));
+  if (el) {
+    if (filter === 'offer') el.classList.add('active-teal');
+    else if (filter === 'request') el.classList.add('active-purple');
+    else el.classList.add('active');
+  }
+  const inst = installations.find(i => i.id === activeInstId);
+  if (inst) renderInstServices(inst.services || []);
+}
+
+function renderInstServices(services) {
+  const grid = document.getElementById('instServiceGrid');
+  const filtered = instServiceFilter === 'all' ? services : services.filter(s => s.svcType === instServiceFilter);
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:30px 20px">
+      <div class="icon">${instServiceFilter === 'offer' ? '✦' : instServiceFilter === 'request' ? '◈' : '⚡'}</div>
+      <h3>No ${instServiceFilter === 'all' ? '' : instServiceFilter + 'd '}services yet</h3>
+      <p style="font-size:13px">Use the buttons above to add services</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(svc => {
+    const isOffer = svc.svcType === 'offer';
+    return `<div class="inst-service-card ${isOffer ? 'svc-offer' : 'svc-request'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <span class="service-badge ${isOffer ? 'offer' : 'request'}">
+          <span class="svc-type-dot"></span>${isOffer ? 'Offering' : 'Request'}
+        </span>
+        <span style="font-size:11px;color:var(--muted)">${svc.category}</span>
+      </div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:6px;color:var(--text)">${svc.title}</div>
+      ${svc.desc ? `<div style="color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:10px">${svc.desc}</div>` : ''}
+      <div class="metric-row">
+        ${svc.price ? `<span class="metric">💰 ${svc.price}</span>` : ''}
+        ${svc.avail ? `<span class="metric">🗓 ${svc.avail}</span>` : ''}
+        ${svc.contact ? `<span class="metric">👤 ${svc.contact}</span>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Inquiry sent!')">Inquire</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="deleteInstService(${svc.id})">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════
+// DISCIPLE PRACTICES ENGINE
+// ═══════════════════════════════
+
+const PRACTICES = [
+  { id:'prayer',   icon:'🙏', name:'Prayer',       desc:'Consistent, intentional communication with God — adoration, confession, thanksgiving, and supplication.' },
+  { id:'scripture',icon:'📖', name:'Scripture',    desc:'Regular reading, meditating, sharing and practice of Scriptures.' },
+  { id:'fellowship',icon:'🤝',name:'Fellowship',   desc:'Intentional table time with other disciples, believers, seekers.' },
+  { id:'service',  icon:'⚒️', name:'Service',      desc:'Using gifts and time to serve others selflessly, reflecting the servant heart of Christ.' },
+  { id:'generosity',icon:'💛',name:'Generosity',   desc:'Cheerful and intentional giving of financial resources, time, and talents for God\'s kingdom.' },
+  { id:'communion',icon:'🍞', name:'Communion',    desc:'Regularly participating in the Lord\'s Supper as a remembrance of Christ\'s sacrifice.' },
+  { id:'solitude', icon:'🌿', name:'Solitude',     desc:'Intentional withdrawal from noise and activity to be still before God and listen.' },
+  { id:'fasting',  icon:'⚡', name:'Fasting',      desc:'Voluntarily abstaining from food or other things to heighten dependence on God in prayer.' },
+  { id:'discipleship',icon:'🌱',name:'Discipleship',desc:'Intentionally investing in others\' spiritual growth — teaching, mentoring, and multiplying disciples.' },
+  { id:'shabbath',   icon:'🕯️',name:'Shabat–Domingo',desc:'Honoring a weekly rhythm of rest, worship, and renewal — ceasing from work to delight in God, family, and creation.' },
+];
+
+let dpValues = {};
+PRACTICES.forEach(p => dpValues[p.id] = 1);
+
+function buildDisciplePractices() {
+  const grid = document.getElementById('practiceGrid');
+  grid.innerHTML = '';
+  PRACTICES.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'practice-card';
+    card.id = 'pc-' + p.id;
+    card.innerHTML = `
+      <span class="practice-icon">${p.icon}</span>
+      <div class="practice-name">${p.name}</div>
+      <div class="practice-desc">${p.desc}</div>
+      <div class="practice-level-row">
+        <span class="practice-level-label">Level</span>
+        <span class="practice-level-val" id="dpv-${p.id}">1</span>
+      </div>
+      <input type="range" class="practice-slider" min="1" max="5" value="1"
+        style="background:var(--surface3);"
+        oninput="updatePractice('${p.id}', this.value)"
+        id="dps-${p.id}"/>
+      <div class="practice-pips" id="dpp-${p.id}">
+        ${[1,2,3,4,5].map(n=>`<div class="pip" id="pip-${p.id}-${n}"></div>`).join('')}
+      </div>
+      <div class="practice-note">
+        <textarea placeholder="Add a personal note or goal for ${p.name.toLowerCase()}..."></textarea>
+      </div>`;
+    grid.appendChild(card);
+    renderPips(p.id, 1);
+  });
+  updateDpSummary();
+  setTimeout(buildRadar, 100);
+}
+
+function updatePractice(id, val) {
+  val = parseInt(val);
+  dpValues[id] = val;
+  document.getElementById('dpv-' + id).textContent = val;
+  renderPips(id, val);
+  // Update card border color intensity
+  const card = document.getElementById('pc-' + id);
+  const intensity = (val - 1) / 4;
+  card.style.borderColor = val >= 4 ? 'var(--gold)' : val >= 3 ? 'var(--border)' : 'var(--border)';
+  card.querySelector('::before');
+  updateDpSummary();
+  drawRadar();
+}
+
+function renderPips(id, val) {
+  for (let n = 1; n <= 5; n++) {
+    const pip = document.getElementById(`pip-${id}-${n}`);
+    if (pip) pip.classList.toggle('filled', n <= val);
+  }
+}
+
+function updateDpSummary() {
+  const total = Object.values(dpValues).reduce((a, b) => a + b, 0);
+  document.getElementById('dp-total').textContent = total;
+}
+
+// ─── Radar Chart (pure canvas, no libs) ───
+function buildRadar() {
+  drawRadar();
+}
+
+function drawRadar() {
+  const canvas = document.getElementById('dp-radar');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 300;
+  canvas.width = W;
+  canvas.height = 180;
+  const cx = W / 2, cy = 88, r = 70;
+  const n = PRACTICES.length;
+  ctx.clearRect(0, 0, W, 180);
+
+  const gold = '#c9a84c', goldDim = 'rgba(201,168,76,0.15)', muted = '#8a8680', surface3 = '#2e2c29';
+
+  // Draw grid rings
+  [1,2,3,4,5].forEach(ring => {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const rr = r * (ring / 5);
+      const x = cx + rr * Math.cos(angle);
+      const y = cy + rr * Math.sin(angle);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = ring === 5 ? 'rgba(201,168,76,0.25)' : 'rgba(58,56,53,0.7)';
+    ctx.lineWidth = ring === 5 ? 1.5 : 0.7;
+    ctx.stroke();
+  });
+
+  // Draw spokes
+  for (let i = 0; i < n; i++) {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(58,56,53,0.8)';
+    ctx.lineWidth = 0.7;
+    ctx.stroke();
+  }
+
+  // Draw filled polygon
+  ctx.beginPath();
+  PRACTICES.forEach((p, i) => {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const val = dpValues[p.id] || 1;
+    const rr = r * (val / 5);
+    const x = cx + rr * Math.cos(angle);
+    const y = cy + rr * Math.sin(angle);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = goldDim;
+  ctx.fill();
+  ctx.strokeStyle = gold;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Dots at vertices
+  PRACTICES.forEach((p, i) => {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const val = dpValues[p.id] || 1;
+    const rr = r * (val / 5);
+    const x = cx + rr * Math.cos(angle);
+    const y = cy + rr * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = gold;
+    ctx.fill();
+  });
+
+  // Labels around edge
+  ctx.font = '10px DM Sans, sans-serif';
+  ctx.fillStyle = muted;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  PRACTICES.forEach((p, i) => {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const labelR = r + 18;
+    const x = cx + labelR * Math.cos(angle);
+    const y = cy + labelR * Math.sin(angle);
+    ctx.fillText(p.name, x, y);
+  });
+}
+
+window.addEventListener('resize', () => { if (document.getElementById('page-disciple').classList.contains('active')) drawRadar(); });
+
+// ═══════════════════════════════
+// FELLOWSHIP EVENTS ENGINE
+// ═══════════════════════════════
+let fellowshipEvents = [];
+
+function addFellowshipEvent() {
+  const date = document.getElementById('fe-date').value;
+  const desc = document.getElementById('fe-desc').value.trim();
+  const num  = parseInt(document.getElementById('fe-num').value);
+  if (!date) { alert('Please select a date.'); return; }
+  if (!desc) { alert('Please enter a description.'); return; }
+  if (!num || num < 1) { alert('Please enter a valid number of people.'); return; }
+
+  fellowshipEvents.push({ id: Date.now(), date, desc, num });
+  fellowshipEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Clear inputs
+  document.getElementById('fe-date').value = '';
+  document.getElementById('fe-desc').value = '';
+  document.getElementById('fe-num').value  = '';
+
+  closeModal('fellowshipModal');
+  renderFellowshipEvents();
+  showToast('Fellowship event added!');
+}
+
+function deleteFellowshipEvent(id) {
+  fellowshipEvents = fellowshipEvents.filter(e => e.id !== id);
+  renderFellowshipEvents();
+  showToast('Event removed', 'var(--red)');
+}
+
+function renderFellowshipEvents() {
+  const rows    = document.getElementById('fellowshipRows');
+  const empty   = document.getElementById('fellowshipEmpty');
+  const summary = document.getElementById('fellowshipSummary');
+
+  if (fellowshipEvents.length === 0) {
+    rows.innerHTML = '';
+    rows.appendChild(empty);
+    empty.style.display = 'block';
+    summary.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  summary.style.display = 'flex';
+
+  rows.innerHTML = fellowshipEvents.map(ev => {
+    const d = new Date(ev.date + 'T00:00:00');
+    const formatted = d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    return `<div class="fe-row">
+      <div class="fe-date">${formatted}</div>
+      <div class="fe-desc-cell">${ev.desc}</div>
+      <div class="fe-people-cell">${ev.num}</div>
+      <div style="text-align:right"><button class="fe-del" onclick="deleteFellowshipEvent(${ev.id})" title="Remove">✕</button></div>
+    </div>`;
+  }).join('');
+
+  const totalPeople = fellowshipEvents.reduce((sum, e) => sum + e.num, 0);
+  document.getElementById('fe-count').textContent  = fellowshipEvents.length;
+  document.getElementById('fe-people').textContent = totalPeople;
+}
+
+// ═══════════════════════════════
+// INSTALLATION MEMBERS ENGINE
+// ═══════════════════════════════
+const MAX_MEMBERS = 18;
+let activeMemberId = null;
+
+const MEMBER_PRACTICE_IDS = ['prayer','scripture','fellowship','service','generosity','communion','solitude','fasting','discipleship','shabbath'];
+const MEMBER_HEALTH_IDS   = ['spirit','phys','mental','fin','family'];
+const MEMBER_ROLE_IDS     = ['father','mother','professional','husband','wife','friend','relative','citizen','disciple'];
+
+function getInstMembers() {
+  const inst = installations.find(i => i.id === activeInstId);
+  return inst ? (inst.members || []) : [];
+}
+
+function addMemberSlot() {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst) return;
+  if (!inst.members) inst.members = [];
+  if (inst.members.length >= MAX_MEMBERS) {
+    showToast('Max 18 members reached — create a new installation.', 'var(--red)');
+    return;
+  }
+  const newMember = {
+    id: Date.now(),
+    fname:'', lname:'', father:'', mother:'', dob:'', cob:'', role:'',
+    results:'', multi:'', gov:'',
+    roles: {},
+    truth: 5, love: 5,
+    creds:'', domains:'', expertise:'', industries:'',
+    practices: { prayer:1,scripture:1,fellowship:1,service:1,generosity:1,communion:1,solitude:1,fasting:1,discipleship:1,shabbath:1 },
+    health: { spirit:3,phys:3,mental:3,fin:3,family:3 }
+  };
+  inst.members.push(newMember);
+  renderMemberRoster(inst.members);
+  openMemberDrawer(newMember.id);
+}
+
+function renderMemberRoster(members) {
+  const roster = document.getElementById('memberRoster');
+  const badge  = document.getElementById('memberCountBadge');
+  const fill   = document.getElementById('memberCapFill');
+  const label  = document.getElementById('memberCapLabel');
+  const addBtn = document.getElementById('addMemberBtn');
+  if (!roster) return;
+  const count = members.length;
+  const pct   = (count / MAX_MEMBERS) * 100;
+  badge.textContent = '(' + count + ' / ' + MAX_MEMBERS + ')';
+  label.textContent = count + ' / ' + MAX_MEMBERS;
+  fill.style.width  = pct + '%';
+  fill.className    = 'member-cap-fill' + (count >= MAX_MEMBERS ? ' full' : '');
+  addBtn.disabled   = count >= MAX_MEMBERS;
+  addBtn.style.opacity = count >= MAX_MEMBERS ? '.4' : '1';
+  roster.innerHTML = members.map(m => {
+    const initials = ((m.fname?.[0]||'') + (m.lname?.[0]||'')).toUpperCase() || '?';
+    const displayName = (m.fname || m.lname) ? (m.fname + ' ' + m.lname).trim() : 'New Member';
+    return '<div class="member-slot filled" onclick="openMemberDrawer(' + m.id + ')">' +
+      '<div class="member-avatar">' + initials + '</div>' +
+      '<div class="member-slot-name">' + displayName + '</div>' +
+      '<div class="member-slot-role">' + (m.role || 'No role set') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function openMemberDrawer(memberId) {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst || !inst.members) return;
+  const m = inst.members.find(x => x.id === memberId);
+  if (!m) return;
+  activeMemberId = memberId;
+  document.getElementById('drawerMemberId').value = memberId;
+  const dn = (m.fname || m.lname) ? (m.fname + ' ' + m.lname).trim() : 'New Member';
+  document.getElementById('drawerTitle').textContent = dn;
+  document.getElementById('dm-fname').value    = m.fname || '';
+  document.getElementById('dm-lname').value    = m.lname || '';
+  document.getElementById('dm-father').value   = m.father || '';
+  document.getElementById('dm-mother').value   = m.mother || '';
+  document.getElementById('dm-dob').value      = m.dob || '';
+  document.getElementById('dm-cob').value      = m.cob || '';
+  document.getElementById('dm-role').value     = m.role || '';
+  document.getElementById('dm-results').value  = m.results || '';
+  document.getElementById('dm-multi').value    = m.multi || '';
+  document.getElementById('dm-gov').value      = m.gov || '';
+  document.getElementById('dm-truth').value    = m.truth || 5;
+  document.getElementById('dm-truth-v').textContent = m.truth || 5;
+  document.getElementById('dm-love').value     = m.love || 5;
+  document.getElementById('dm-love-v').textContent  = m.love || 5;
+  document.getElementById('dm-creds').value    = m.creds || '';
+  document.getElementById('dm-domains').value  = m.domains || '';
+  document.getElementById('dm-expertise').value  = m.expertise || '';
+  document.getElementById('dm-industries').value = m.industries || '';
+  MEMBER_ROLE_IDS.forEach(function(r) {
+    var el = document.getElementById('dm-r-' + r);
+    if (el) el.checked = !!(m.roles && m.roles[r]);
+  });
+  MEMBER_PRACTICE_IDS.forEach(function(p) {
+    var val = (m.practices && m.practices[p]) || 1;
+    var sl  = document.getElementById('dmp-' + p);
+    var lbl = document.getElementById('dmp-' + p + '-v');
+    if (sl)  sl.value = val;
+    if (lbl) lbl.textContent = val;
+  });
+  MEMBER_HEALTH_IDS.forEach(function(h) {
+    var val = (m.health && m.health[h]) || 3;
+    var sl  = document.getElementById('dmh-' + h);
+    var lbl = document.getElementById('dmh-' + h + '-v');
+    if (sl)  sl.value = val;
+    if (lbl) lbl.textContent = val;
+  });
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('memberDrawer').classList.add('open');
+}
+
+function saveMember() {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst || !inst.members) return;
+  const m = inst.members.find(x => x.id === activeMemberId);
+  if (!m) return;
+  m.fname    = document.getElementById('dm-fname').value.trim();
+  m.lname    = document.getElementById('dm-lname').value.trim();
+  m.father   = document.getElementById('dm-father').value.trim();
+  m.mother   = document.getElementById('dm-mother').value.trim();
+  m.dob      = document.getElementById('dm-dob').value;
+  m.cob      = document.getElementById('dm-cob').value.trim();
+  m.role     = document.getElementById('dm-role').value.trim();
+  m.results  = document.getElementById('dm-results').value;
+  m.multi    = document.getElementById('dm-multi').value;
+  m.gov      = document.getElementById('dm-gov').value;
+  m.truth    = parseInt(document.getElementById('dm-truth').value);
+  m.love     = parseInt(document.getElementById('dm-love').value);
+  m.creds    = document.getElementById('dm-creds').value.trim();
+  m.domains  = document.getElementById('dm-domains').value.trim();
+  m.expertise  = document.getElementById('dm-expertise').value.trim();
+  m.industries = document.getElementById('dm-industries').value.trim();
+  m.roles = {};
+  MEMBER_ROLE_IDS.forEach(function(r) { m.roles[r] = !!(document.getElementById('dm-r-' + r) && document.getElementById('dm-r-' + r).checked); });
+  m.practices = {};
+  MEMBER_PRACTICE_IDS.forEach(function(p) { m.practices[p] = parseInt(document.getElementById('dmp-' + p) ? document.getElementById('dmp-' + p).value : 1); });
+  m.health = {};
+  MEMBER_HEALTH_IDS.forEach(function(h) { m.health[h] = parseInt(document.getElementById('dmh-' + h) ? document.getElementById('dmh-' + h).value : 3); });
+  const dn = (m.fname || m.lname) ? (m.fname + ' ' + m.lname).trim() : 'New Member';
+  document.getElementById('drawerTitle').textContent = dn;
+  renderMemberRoster(inst.members);
+  renderInstallationsList();
+  showToast('Member saved!');
+}
+
+function deleteMember() {
+  const inst = installations.find(i => i.id === activeInstId);
+  if (!inst || !inst.members) return;
+  if (!confirm('Remove this member from the installation?')) return;
+  inst.members = inst.members.filter(x => x.id !== activeMemberId);
+  closeMemberDrawer();
+  renderMemberRoster(inst.members);
+  renderInstallationsList();
+  showToast('Member removed', 'var(--red)');
+}
+
+function closeMemberDrawer() {
+  activeMemberId = null;
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('memberDrawer').classList.remove('open');
+}
+
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'dm-fname' || e.target.id === 'dm-lname') {
+    var fn = document.getElementById('dm-fname').value;
+    var ln = document.getElementById('dm-lname').value;
+    document.getElementById('drawerTitle').textContent = (fn || ln) ? (fn + ' ' + ln).trim() : 'New Member';
+  }
+});
+
+
+// ═══════════════════════════════
+// PRAYER LIST ENGINE
+// ═══════════════════════════════
+let prayerEntries = [];
+let prayerFilter  = 'all';
+let prayerSearch  = '';
+
+function openPrayerEditar(id) {
+  const e = prayerEntries.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('prayerModalTitle').textContent = 'Editar Prayer Entry';
+  document.getElementById('pm-edit-id').value   = id;
+  document.getElementById('pm-name').value      = e.name;
+  document.getElementById('pm-type').value      = e.type;
+  document.getElementById('pm-context').value   = e.context;
+  document.getElementById('pm-date').value      = e.date;
+  document.getElementById('pm-answered').checked = !!e.answered;
+  openModal('prayerModal');
+}
+
+function closePrayerModal() {
+  document.getElementById('prayerModalTitle').textContent = 'Add Prayer Entry';
+  document.getElementById('pm-edit-id').value = '';
+  document.getElementById('pm-name').value    = '';
+  document.getElementById('pm-type').value    = 'request';
+  document.getElementById('pm-context').value = '';
+  document.getElementById('pm-date').value    = '';
+  document.getElementById('pm-answered').checked = false;
+  closeModal('prayerModal');
+}
+
+function savePrayerEntry() {
+  const name    = document.getElementById('pm-name').value.trim();
+  const context = document.getElementById('pm-context').value.trim();
+  const type    = document.getElementById('pm-type').value;
+  const date    = document.getElementById('pm-date').value || new Date().toISOString().slice(0,10);
+  const answered = document.getElementById('pm-answered').checked;
+  const editId  = document.getElementById('pm-edit-id').value;
+
+  if (!name)    { alert('Please enter a name.'); return; }
+  if (!context) { alert('Please add context, a request, or a praise note.'); return; }
+
+  if (editId) {
+    const e = prayerEntries.find(x => x.id === parseInt(editId));
+    if (e) { e.name = name; e.type = type; e.context = context; e.date = date; e.answered = answered; }
+  } else {
+    prayerEntries.unshift({ id: Date.now(), name, type, context, date, answered });
+  }
+
+  closePrayerModal();
+  renderPrayerList();
+  showToast(editId ? 'Prayer entry updated!' : 'Prayer entry added!', editId ? 'var(--gold)' : 'var(--green)');
+}
+
+function deletePrayerEntry(id) {
+  prayerEntries = prayerEntries.filter(x => x.id !== id);
+  renderPrayerList();
+  showToast('Entry removed', 'var(--red)');
+}
+
+function toggleAnswered(id) {
+  const e = prayerEntries.find(x => x.id === id);
+  if (e) { e.answered = !e.answered; }
+  renderPrayerList();
+  showToast(e && e.answered ? 'Marked as answered! Praise God!' : 'Marked as ongoing', e && e.answered ? 'var(--green)' : 'var(--muted)');
+}
+
+function filterPrayer(f, el) {
+  prayerFilter = f;
+  document.querySelectorAll('.prayer-type-btn').forEach(b => {
+    b.classList.remove('active','active-request','active-praise');
+  });
+  if (el) {
+    if (f === 'request') el.classList.add('active-request');
+    else if (f === 'praise') el.classList.add('active-praise');
+    else el.classList.add('active');
+  }
+  renderPrayerList();
+}
+
+function searchPrayer(val) {
+  prayerSearch = val.toLowerCase();
+  renderPrayerList();
+}
+
+function renderPrayerList() {
+  const grid  = document.getElementById('prayerGrid');
+  const empty = document.getElementById('prayerEmpty');
+  if (!grid) return;
+
+  let visible = prayerEntries;
+  if (prayerFilter !== 'all') visible = visible.filter(e => e.type === prayerFilter);
+  if (prayerSearch) visible = visible.filter(e =>
+    e.name.toLowerCase().includes(prayerSearch) ||
+    e.context.toLowerCase().includes(prayerSearch)
+  );
+
+  // Stats (always from full list)
+  document.getElementById('ps-total').textContent    = prayerEntries.length;
+  document.getElementById('ps-requests').textContent = prayerEntries.filter(e => e.type === 'request').length;
+  document.getElementById('ps-praises').textContent  = prayerEntries.filter(e => e.type === 'praise').length;
+  document.getElementById('ps-answered').textContent = prayerEntries.filter(e => e.answered).length;
+
+  if (visible.length === 0) {
+    grid.innerHTML = '';
+    grid.appendChild(empty);
+    empty.style.display = 'block';
+    empty.textContent = prayerSearch || prayerFilter !== 'all'
+      ? 'No entries match your filter or search.'
+      : 'No prayer entries yet. Add your first one above.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const typeLabel = { context:'Context', request:'Request', praise:'Praise' };
+
+  grid.innerHTML = visible.map(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    const dateStr = d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const answeredClass = e.answered ? ' prayer-answered' : '';
+    const answeredBtn = e.type === 'request'
+      ? `<button class="prayer-edit-btn" onclick="toggleAnswered(${e.id})" title="${e.answered ? 'Mark ongoing' : 'Mark answered'}">${e.answered ? '↺ Ongoing' : '✓ Answered'}</button>`
+      : '';
+    return `<div class="prayer-item${answeredClass}">
+      <div class="prayer-dot ${e.type}" style="margin-top:6px"></div>
+      <div class="prayer-item-body">
+        <div class="prayer-name">${e.name}</div>
+        <div class="prayer-context">${e.context}</div>
+        <div class="prayer-meta">
+          <span class="prayer-type-tag ${e.type}">${typeLabel[e.type]}</span>
+          <span class="prayer-date">${dateStr}</span>
+          ${e.answered ? '<span style="font-size:11px;color:var(--green);font-weight:600">✦ Answered</span>' : ''}
+        </div>
+      </div>
+      <div class="prayer-actions">
+        ${answeredBtn}
+        <button class="prayer-edit-btn" onclick="openPrayerEditar(${e.id})">Editar</button>
+        <button class="prayer-del" onclick="deletePrayerEntry(${e.id})" title="Remove">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Pre-load a couple of sample entries
+prayerEntries = [
+  { id: 1, name: 'Maria Santos', type: 'request', context: 'Healing from chronic illness — believing for full restoration.', date: '2026-03-10', answered: false },
+  { id: 2, name: 'JSR Design Group', type: 'request', context: 'Wisdom and favor for the Sardenberg project permit approval.', date: '2026-03-12', answered: false },
+  { id: 3, name: "Carlos Sardenberg", type: "praise", context: "House permit approved! Giving thanks for Gods provision and timing.", date: "2026-03-15", answered: true },
+  { id: 4, name: 'Sou discípulo de Jesus - Boca Network', type: 'context', context: 'Praying for growth, unity, and multiplication of disciples across South Florida.', date: '2026-03-01', answered: false },
+];
+
+
+// ═══════════════════════════════
+// SPIRITUAL COVERING ENGINE
+// ═══════════════════════════════
+let coveringChurches = [
+  { id:'CH-09',  name:"Confe' Church",                   pastor:'Pr. Marconi Candido',  denom:'Evangelical',        city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:"Confe' Church — a confessing and worshiping community anchored in the Word and the power of the Holy Spirit." },
+  { id:'CH-01',  name:'Assemblies of God Church',    pastor:'Pr. Pereira',   denom:'Assemblies of God',      city:'Boca Raton', phone:'', website:'', gov:'Sole Leadership', desc:'Pentecostal congregation empowered by the Spirit for evangelism and discipleship.' },
+  { id:'CH-02',  name:'Atitude Church',              pastor:'',              denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Bold and purposeful church raising up a generation of disciples with attitude for God.' },
+  { id:'CH-03',  name:'Boca Community Church',       pastor:'Pr. McDaniel',  denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Community-centered church serving the diverse families of Boca Raton.' },
+  { id:'CH-04',  name:'Calvary Chapel Church',       pastor:'Pr. Sauder',    denom:'Calvary Chapel',         city:'Boca Raton', phone:'', website:'', gov:'Sole Leadership', desc:'Verse-by-verse Bible teaching church committed to discipleship and sending.' },
+  { id:'CH-05',  name:'Church by the Glades',          pastor:'Pr. David Hughes',     denom:'Non-denominational', city:'Coral Springs', phone:'', website:'', gov:'Elder Board', desc:'Church by the Glades — a vibrant multi-site church reaching the Everglades corridor with the love of Christ and practical ministry.' },
+  { id:'CH-06',  name:'Church of All Nations',       pastor:'Pr. Boykin',    denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Multicultural congregation celebrating unity in diversity across all nations.' },
+  { id:'CH-07',  name:'Church on Atlantic',             pastor:'Pr. Marcelo Pompeo',   denom:'Non-denominational', city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'Church on Atlantic — a dynamic congregation on Atlantic Avenue reaching the Boca Raton and Delray Beach corridor with the gospel of Jesus Christ.' },
+  { id:'CH-08',  name:'Coastal Church',              pastor:'Pr. McCormick', denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Coastal community church reaching South Florida with the gospel of Jesus Christ.' },
+  { id:'CH-10',  name:'Crossbridge Baptist Church',      pastor:'Pr. Rob Taylor',       denom:'Baptist',            city:'Boca Raton',   phone:'', website:'', gov:'Congregational', desc:'Crossbridge Baptist Church — crossing every bridge with the gospel, a Baptist congregation committed to biblical teaching, community outreach, and making disciples in South Florida.' },
+  { id:'CH-11',  name:'Diante do Trono',             pastor:'Pr. Bessa',     denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Worship and intercession ministry before the throne of God.' },
+  { id:'CH-12',  name:'Embaixada Church',            pastor:'Pr. Passinato', denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Embassy of heaven — representing the kingdom of God in Boca Raton and beyond.' },
+  { id:'CH-13',  name:'Exchange Church',                pastor:'Pr. Josiah Graves',    denom:'Non-denominational', city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'Exchange Church — trading the old for the new in Christ, a vibrant community committed to transformation, discipleship, and reaching South Florida.' },
+  { id:'CH-14',  name:'Grace Community Church',      pastor:'Pr. Whitener',  denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Grace-centered congregation with a passion for biblical teaching and local outreach.' },
+  { id:'CH-15',  name:'Harbour Church',              pastor:'Pr. Davis',     denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Safe harbour for all people — a church anchored in Christ and the Great Commission.' },
+  { id:'CH-16',  name:'Journey Church',              pastor:'',              denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'A church for people on a journey of faith, growth, and purpose.' },
+  { id:'CH-17',  name:'KOH Church',                      pastor:'Pr. Marcio Reis',      denom:'Non-denominational', city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'KOH (Kingdom of Heaven) Church — advancing the kingdom with boldness, prayer, and discipleship in South Florida.' },
+  { id:'CH-18',  name:'Lagoinha Church',               pastor:'Pr. Diego Araujo',     denom:'Evangelical',       city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Lagoinha Church — part of the Lagoinha movement, passionate about revival, discipleship, and church planting in South Florida.' },
+  { id:'CH-19',  name:'Life Point Church',           pastor:'Pr. Corra',     denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Life-giving church pointing every person toward their God-given purpose.' },
+  { id:'CH-20',  name:'Living Water Church',           pastor:'Pr. Erasmo Teixeira',  denom:'Evangelical',       city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Living Water Church — flowing in the life-giving presence of the Holy Spirit, reaching families and individuals in South Florida.' },
+  { id:'CH-21',  name:'Mananciais Church',           pastor:'Pr. Carvalho',  denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Spirit-filled congregation focused on renewal, worship, and multiplication of disciples.' },
+  { id:'CH-22',  name:'Methodist Church',           pastor:'Pr. Nelson',    denom:'Metodista',              city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Methodist congregation serving Boca Raton with a heart for discipleship and community.' },
+  { id:'CH-23',  name:'Mevam Church',                    pastor:'Pr. Samuel Nascimento', denom:'Evangelical',        city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'Mevam Church — a Spirit-filled congregation devoted to worship, the Word, and multiplying disciples across South Florida.' },
+  { id:'CH-24',  name:'New Hope Baptist Church',       pastor:'Pr. Emanuel Carvalho', denom:'Baptist',           city:'Boca Raton', phone:'', website:'', gov:'Congregational',  desc:'New Hope Baptist Church — a congregation rooted in the hope of the gospel and committed to discipleship in the community.' },
+  { id:'CH-25',  name:'Ocean Church',                pastor:'Pr. Bennet Johnson', denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Ocean-side congregation with a vision to impact the coastal communities of South Florida.' },
+  { id:'CH-26',  name:'Other Church',                pastor:'',              denom:'',                       city:'Boca Raton', phone:'', website:'', gov:'',                desc:'Another covering church not listed above.' },
+  { id:'CH-27',  name:'PIB Baptist Church',          pastor:'Pr. Ladeia',    denom:'Baptist',                city:'Boca Raton', phone:'', website:'', gov:'Congregational',  desc:'Portuguese-speaking Baptist church rooted in expository teaching and mission.' },
+  { id:'CH-28',  name:'Sing Church',                   pastor:'Pr. Joe Vasconcellos', denom:'Non-denominational', city:'Boca Raton', phone:'', website:'', gov:'Elder Board',    desc:'Sing Church — a worship-centered community lifting the name of Jesus and making disciples through song, Word, and community.' },
+  { id:'CH-29',  name:'SoundWave Church',               pastor:'Pr. Andre Aquino',     denom:'Non-denominational', city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'SoundWave Church — a worship-driven community sending waves of the gospel through music, discipleship, and Spirit-led ministry across South Florida.' },
+  { id:'CH-30',  name:'Spanish River Church',           pastor:'Pr. David Cassidy',    denom:'Non-denominational', city:'Boca Raton',   phone:'', website:'', gov:'Elder Board', desc:'Spanish River Church — a thriving congregation along the Spanish River corridor, committed to expository preaching, community impact, and discipleship in Boca Raton.' },
+  { id:'CH-31',  name:'Town Center Church',          pastor:'Pr. Sander',    denom:'Non-denominational',     city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Heart-of-the-city church serving the Town Center area with worship, word, and witness.' },
+  { id:'CH-32',  name:'Victory Church',              pastor:'Pr. Donni Karpinen', denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Sole Leadership', desc:'Victory-focused ministry committed to equipping believers for kingdom impact.' },
+  { id:'CH-33',  name:'Videira Church',              pastor:'Pr. Marcio Alves', denom:'Evangelical',            city:'Boca Raton', phone:'', website:'', gov:'Elder Board',     desc:'Vine-inspired church planting movement committed to organic community and mission.' },
+  { id:'CH-34',  name:'SoundWave Church',             pastor:'Pr. Marcelo Borin',    denom:'Non-denominational', city:'Boca Raton', phone:'', website:'', gov:'Elder Board', desc:'SoundWave Church — a worship-driven community sending waves of the gospel through music, discipleship, and Spirit-led ministry across South Florida.' }
+]
+
+
+// ═══════════════════════════════
+// COVERING CHURCHES ENGINE
+// ═══════════════════════════════
+
+function renderChurchNetwork() {
+  var list = document.getElementById('churchNetworkList');
+  if (!list) return;
+  if (coveringChurches.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px 0">No churches in the network yet.</div>';
+    return;
+  }
+  var html = '';
+  coveringChurches.forEach(function(ch) {
+    var instCount = installations.filter(function(i){ return i.coveringChurchId === ch.id; }).length;
+    var denomBadge = ch.denom ? '<span style="padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(155,111,212,.15);color:#c4a0e8;border:1px solid rgba(155,111,212,.25)">&#9962; ' + ch.denom + '</span>' : '';
+    var govBadge   = ch.gov   ? '<span style="font-size:11px;color:var(--muted);background:var(--surface3);padding:2px 8px;border-radius:6px">&#9878; ' + ch.gov + '</span>' : '';
+    var coverBadge = instCount ? '<span style="font-size:11px;color:#c4a0e8;background:rgba(155,111,212,.1);padding:2px 8px;border-radius:6px;border:1px solid rgba(155,111,212,.2)">&#128737; Covering ' + instCount + ' installation' + (instCount !== 1 ? 's' : '') + '</span>' : '';
+    var pastorLine = ch.pastor ? '<div style="font-size:13px;color:var(--muted);margin-bottom:6px">' + ch.pastor + '</div>' : '';
+    html += '<div class="church-network-card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">' +
+        denomBadge +
+        '<span style="font-size:11px;color:var(--muted)">' + ch.city + '</span>' +
+      '</div>' +
+      '<div style="font-family:var(--font-head);font-size:17px;color:#c4a0e8;margin-bottom:2px">' + ch.name + '</div>' +
+      pastorLine +
+      '<div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px">' + ch.desc + '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0">' + govBadge + coverBadge + '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function openCoveringModal() {
+  var list = document.getElementById('coveringChurchList');
+  var inst = installations.find(function(i){ return i.id === activeInstId; });
+  var html = '';
+  var search = document.getElementById('coveringSearch') ? document.getElementById('coveringSearch').value.toLowerCase() : '';
+  var filtered = coveringChurches.filter(function(ch){
+    return !search || ch.name.toLowerCase().includes(search) || (ch.pastor && ch.pastor.toLowerCase().includes(search));
+  });
+  if (filtered.length === 0) {
+    html = '<div style="color:var(--muted);font-size:13px;padding:12px 0">No matches found.</div>';
+  } else {
+    filtered.forEach(function(ch) {
+      var isSelected = inst && inst.coveringChurchId === ch.id;
+      var bg     = isSelected ? 'rgba(155,111,212,.12)' : 'var(--surface2)';
+      var border = isSelected ? 'rgba(155,111,212,.5)'  : 'var(--border)';
+      var check  = isSelected ? ' &#10022;' : '';
+      var nameColor = isSelected ? '#c4a0e8' : 'var(--text)';
+      var pastorLine = ch.pastor ? '<div style="font-size:12px;color:var(--muted);margin-top:3px">' + ch.pastor + '</div>' : '';
+      html += '<div data-chid="' + ch.id + '" onclick="assignCovering(this.dataset.chid)" style="background:' + bg + ';border:1px solid ' + border + ';border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;margin-bottom:4px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+          '<div style="font-weight:600;font-size:14px;color:' + nameColor + '">' + ch.name + check + '</div>' +
+          '<span style="font-size:10px;background:rgba(155,111,212,.1);color:#c4a0e8;padding:2px 8px;border-radius:10px;border:1px solid rgba(155,111,212,.2)">' + ch.city + '</span>' +
+        '</div>' +
+        pastorLine +
+      '</div>';
+    });
+  }
+  list.innerHTML = html;
+  openModal('coveringModal');
+}
+
+function assignCovering(churchId) {
+  var inst = installations.find(function(i){ return i.id === activeInstId; });
+  if (!inst) return;
+  inst.coveringChurchId = churchId;
+  closeModal('coveringModal');
+  renderCoveringDisplay(inst);
+  renderChurchNetwork();
+  renderInstallationsList();
+  var ch = coveringChurches.find(function(x){ return x.id === churchId; });
+  showToast('Covering assigned: ' + (ch ? ch.name : ''), 'var(--purple)');
+}
+
+function removeCovering() {
+  var inst = installations.find(function(i){ return i.id === activeInstId; });
+  if (inst) delete inst.coveringChurchId;
+  closeModal('coveringModal');
+  renderCoveringDisplay(inst);
+  renderChurchNetwork();
+  renderInstallationsList();
+  showToast('Covering removed', 'var(--muted)');
+}
+
+function renderCoveringDisplay(inst) {
+  var el = document.getElementById('coveringDisplay');
+  if (!el) return;
+  if (!inst || !inst.coveringChurchId) {
+    el.innerHTML = '<div class="covering-none" onclick="openCoveringModal()">' +
+      '<span style="font-size:24px;opacity:.4">&#9962;</span>' +
+      '<div><div style="font-size:13px;color:var(--muted)">No spiritual covering assigned</div>' +
+      '<div style="font-size:12px;color:var(--muted);margin-top:2px">Click to assign a covering church from the network</div></div>' +
+    '</div>';
+    return;
+  }
+  var ch = coveringChurches.find(function(x){ return x.id === inst.coveringChurchId; });
+  if (!ch) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="covering-banner">' +
+    '<span class="covering-cross">&#10013;</span>' +
+    '<div class="covering-info">' +
+      '<div class="covering-label">Spiritual Covering</div>' +
+      '<div class="covering-church-name">' + ch.name + '</div>' +
+      (ch.pastor ? '<div class="covering-pastor"><span>' + ch.pastor + '</span></div>' : '') +
+      '<div style="font-size:11px;color:var(--muted);margin-top:2px">&#128205; ' + ch.city + '</div>' +
+      '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">' +
+        (ch.gov   ? '<span class="covering-gov-tag">' + ch.gov + '</span>' : '') +
+        (ch.denom ? '<span class="covering-gov-tag">' + ch.denom + '</span>' : '') +
+      '</div>' +
+      '<div class="covering-detail" style="margin-top:8px">' + ch.desc + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ═══════════════════════════════
+// GATHERINGS ENGINE
+// ═══════════════════════════════
+var gatherings = [];
+var gatheringFilter = 'all';
+
+var GATHERING_LABELS = {
+  'coffee':       'Coffee with Pastors',
+  'prayer-g':     'Prayer Gathering',
+  'scripture-g':  'Scripture Study',
+  'fellowship-g': 'Fellowship Gathering',
+  'communion-g':  'Communion Service'
+};
+var GATHERING_ICONS = {
+  'coffee':       '&#9749;',
+  'prayer-g':     '&#128591;',
+  'scripture-g':  '&#128214;',
+  'fellowship-g': '&#129309;',
+  'communion-g':  '&#127863;'
+};
+
+function openGatheringModal(id) {
+  document.getElementById('gatheringModalTitle').textContent = id ? 'Editar Gathering' : 'Add Gathering';
+  document.getElementById('gm-edit-id').value = id || '';
+  if (id) {
+    var g = gatherings.find(function(x){ return x.id === id; });
+    if (g) {
+      document.getElementById('gm-type').value    = g.type;
+      document.getElementById('gm-date').value    = g.date;
+      document.getElementById('gm-time').value    = g.time;
+      document.getElementById('gm-address').value = g.address;
+      document.getElementById('gm-desc').value    = g.desc;
+      document.getElementById('gm-people').value  = g.people;
+    }
+  } else {
+    document.getElementById('gm-type').value    = 'coffee';
+    document.getElementById('gm-date').value    = '';
+    document.getElementById('gm-time').value    = '08:00';
+    document.getElementById('gm-address').value = '';
+    document.getElementById('gm-desc').value    = '';
+    document.getElementById('gm-people').value  = '';
+  }
+  openModal('gatheringModal');
+}
+
+function closeGatheringModal() { closeModal('gatheringModal'); }
+
+function saveGathering() {
+  var type    = document.getElementById('gm-type').value;
+  var date    = document.getElementById('gm-date').value;
+  var time    = document.getElementById('gm-time').value;
+  var address = document.getElementById('gm-address').value.trim();
+  var desc    = document.getElementById('gm-desc').value.trim();
+  var people  = parseInt(document.getElementById('gm-people').value) || 0;
+  var editId  = document.getElementById('gm-edit-id').value;
+  if (!date)    { alert('Please select a date.'); return; }
+  if (!address) { alert('Please enter an address or location.'); return; }
+  if (!desc)    { alert('Please add a short description.'); return; }
+  if (editId) {
+    var g = gatherings.find(function(x){ return x.id === parseInt(editId); });
+    if (g) { g.type=type; g.date=date; g.time=time; g.address=address; g.desc=desc; g.people=people; }
+  } else {
+    gatherings.unshift({ id: Date.now(), type:type, date:date, time:time, address:address, desc:desc, people:people });
+  }
+  gatherings.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  closeGatheringModal();
+  renderGatherings();
+  showToast(editId ? 'Gathering updated!' : 'Gathering added!', 'var(--gold)');
+}
+
+function deleteGathering(id) {
+  gatherings = gatherings.filter(function(x){ return x.id !== id; });
+  renderGatherings();
+  showToast('Gathering removed', 'var(--red)');
+}
+
+function filterGatherings(f, el) {
+  gatheringFilter = f;
+  document.querySelectorAll('#page-gatherings .tab-pill').forEach(function(b){
+    b.classList.remove('active','active-teal','active-purple');
+  });
+  if (el) el.classList.add('active');
+  renderGatherings();
+}
+
+function renderGatherings() {
+  var list  = document.getElementById('gatheringList');
+  var empty = document.getElementById('gatheringEmpty');
+  if (!list) return;
+  var el_total  = document.getElementById('gs-total');
+  if (el_total) el_total.textContent = gatherings.length;
+  ['coffee','prayer-g','scripture-g','fellowship-g','communion-g'].forEach(function(t) {
+    var key = t.replace('-g','');
+    var el = document.getElementById('gs-' + key);
+    if (el) el.textContent = gatherings.filter(function(g){ return g.type === t; }).length;
+  });
+  var elp = document.getElementById('gs-people');
+  if (elp) elp.textContent = gatherings.reduce(function(s,g){ return s+(g.people||0); }, 0);
+  var visible = gatheringFilter === 'all' ? gatherings : gatherings.filter(function(g){ return g.type === gatheringFilter; });
+  if (visible.length === 0) {
+    list.innerHTML = '';
+    if (empty) { list.appendChild(empty); empty.style.display='block'; }
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = visible.map(function(g) {
+    var d = new Date(g.date + 'T00:00:00');
+    var day = d.getDate();
+    var mon = d.toLocaleDateString('en-US', {month:'short'});
+    var yr  = d.getFullYear();
+    var timeStr = g.time ? (function(){ var p=g.time.split(':'),h=parseInt(p[0]),m=p[1],ap=h>=12?'PM':'AM'; h=h%12||12; return h+':'+m+' '+ap; })() : '';
+    var icon  = GATHERING_ICONS[g.type] || '&#9749;';
+    var label = GATHERING_LABELS[g.type] || g.type;
+    var gid   = g.id;
+    return '<div class="gathering-row">' +
+      '<div class="gathering-date-block"><div class="gathering-date-day">'+day+'</div><div class="gathering-date-mon">'+mon+' '+yr+'</div></div>' +
+      '<div class="gathering-body">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="gathering-badge '+g.type+'">'+icon+' '+label+'</span></div>' +
+        '<div class="gathering-meta">' +
+          (timeStr   ? '<span>&#128336; '+timeStr+'</span>' : '') +
+          (g.address ? '<span>&#128205; '+g.address+'</span>' : '') +
+          (g.people  ? '<span>&#128101; '+g.people+' people</span>' : '') +
+        '</div>' +
+        '<div class="gathering-desc">'+g.desc+'</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">' +
+        '<button class="prayer-edit-btn" data-gid="'+gid+'" onclick="openGatheringModal(parseInt(this.dataset.gid))">Editar</button>' +
+        '<button class="prayer-del" data-gid="'+gid+'" onclick="deleteGathering(parseInt(this.dataset.gid))" title="Remove">&#10005;</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+gatherings = [
+  { id:1, type:'coffee',       date:'2026-03-10', time:'08:00', address:'755 Toledo Drive, Boca Raton, FL',     desc:'Monthly pastors coffee — sharing vision for micro-church multiplication across Boca Raton.',    people:14 },
+  { id:2, type:'prayer-g',     date:'2026-02-17', time:'07:00', address:'Calvary Chapel, 6780 N Federal Hwy',  desc:'Corporate intercession for the city, the network, and breakthrough in the southern districts.', people:9  },
+  { id:3, type:'communion-g',  date:'2026-01-20', time:'19:00', address:'Christ Fellowship, Boca Raton Campus',desc:'Pastoral communion and covenant renewal — unity gathering for all pastors in the network.',      people:18 },
+  { id:4, type:'scripture-g',  date:'2025-12-09', time:'08:30', address:'Grace Community Church, Boca Raton',  desc:'Joint lectio divina and expository study — John 17 and the prayer of Jesus for unity.',          people:11 },
+  { id:5, type:'fellowship-g', date:'2025-11-18', time:'18:30', address:'Town Center Church, Boca Raton',      desc:'Pastoral family fellowship dinner — pastors and spouses, building covenant relationships.',       people:22 }
+];
+
+
+function openAddChurchModal() {
+  document.getElementById("coveringSearchAll").value = "";
+  renderAllChurchPicker("");
+  openModal("addChurchModal");
+}
+
+function renderAllChurchPicker(search) {
+  var list = document.getElementById('allChurchPickerList');
+  if (!list) return;
+  var q = (search || '').toLowerCase();
+  var filtered = q ? coveringChurches.filter(function(ch){
+    return ch.name.toLowerCase().includes(q) || (ch.pastor && ch.pastor.toLowerCase().includes(q));
+  }) : coveringChurches;
+  list.innerHTML = filtered.map(function(ch) {
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:default">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div style="font-weight:600;font-size:14px;color:var(--text)">' + ch.name + '</div>' +
+        '<span style="font-size:10px;background:rgba(155,111,212,.1);color:#c4a0e8;padding:2px 8px;border-radius:10px;border:1px solid rgba(155,111,212,.2)">' + ch.city + '</span>' +
+      '</div>' +
+      (ch.pastor ? '<div style="font-size:12px;color:var(--muted);margin-top:3px">' + ch.pastor + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+// ═══════════════════════════════
+// DOCTRINAL STATEMENT ENGINE
+// ═══════════════════════════════
+var doctrineAgreements = {};
+
+function renderDoctrineChurchList() {
+  var list = document.getElementById('doctrineChurchList');
+  if (!list) return;
+  var html = '';
+  coveringChurches.forEach(function(ch) {
+    var agreed = !!doctrineAgreements[ch.id];
+    html += '<div class="doctrine-church-check">' +
+      '<div>' +
+        '<div style="font-size:14px;font-weight:600;color:var(--text)">' + ch.name + '</div>' +
+        (ch.pastor ? '<div style="font-size:12px;color:var(--muted);margin-top:1px">' + ch.pastor + '</div>' : '') +
+      '</div>' +
+      '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none">' +
+        (agreed
+          ? '<span style="font-size:12px;color:var(--green);font-weight:600">&#10003; Affirmed</span>'
+          : '<span style="font-size:12px;color:var(--muted)">Pending</span>') +
+        '<input type="checkbox" data-cid="' + ch.id + '" ' + (agreed ? 'checked' : '') +
+          ' onchange="toggleDoctrineAgreement(this.dataset.cid, this.checked)"' +
+          ' style="width:16px;height:16px;accent-color:var(--green);cursor:pointer"/>' +
+      '</label>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+
+  // Summary
+  var affirmedCount = Object.values(doctrineAgreements).filter(Boolean).length;
+  var total = coveringChurches.length;
+  var existing = document.getElementById('doctrine-summary');
+  var summaryHtml = '<div id="doctrine-summary" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
+    '<span style="font-size:13px;color:var(--muted)">Affirmed: <span style="color:var(--green);font-weight:600">' + affirmedCount + '</span> of ' + total + ' churches</span>' +
+    '<div style="flex:1;height:6px;background:var(--surface3);border-radius:3px;min-width:100px">' +
+      '<div style="height:100%;border-radius:3px;background:var(--green);transition:width .4s;width:' + Math.round((affirmedCount/total)*100) + '%"></div>' +
+    '</div>' +
+  '</div>';
+  if (existing) existing.outerHTML = summaryHtml;
+  else list.insertAdjacentHTML('afterend', summaryHtml);
+}
+
+function toggleDoctrineAgreement(churchId, agreed) {
+  doctrineAgreements[churchId] = agreed;
+  renderDoctrineChurchList();
+  var ch = coveringChurches.find(function(x){ return x.id === churchId; });
+  showToast((ch ? ch.name : 'Church') + (agreed ? ' affirmed doctrine!' : ' marked pending'), agreed ? 'var(--green)' : 'var(--muted)');
+}
+
+
+// ── MICRO-CHURCH GOVERNMENT HELPERS ──
+var MC_GOV_CLASSES = {
+  'Independent':        'mc-gov-independent',
+  'Bylaws':             'mc-gov-bylaws',
+  'Elders':             'mc-gov-elders',
+  'Governed by a Church': 'mc-gov-church',
+  'Other':              'mc-gov-other'
+};
+var MC_GOV_ICONS = {
+  'Independent':          '&#127759;',
+  'Bylaws':               '&#128195;',
+  'Elders':               '&#128104;',
+  'Governed by a Church': '&#10013;',
+  'Other':                '&#9881;'
+};
+
+function updateMcGovDesc() {
+  var val = document.getElementById('det-mc-gov') ? document.getElementById('det-mc-gov').value : '';
+  var wrap = document.getElementById('det-mc-gov-desc-wrap');
+  if (wrap) wrap.style.display = val ? 'block' : 'none';
+}
+
+function getMcGovBadge(mcGov) {
+  if (!mcGov) return '';
+  var cls  = MC_GOV_CLASSES[mcGov] || 'mc-gov-other';
+  var icon = MC_GOV_ICONS[mcGov]   || '&#9881;';
+  return '<span class="mc-gov-badge ' + cls + '">' + icon + ' ' + mcGov + '</span>';
+}
+
+
+buildLifecycle();
+buildDimRows();
+buildServices();
+buildCalls();
+buildDisciplePractices();
+renderPrayerList();
+renderChurchNetwork();
+renderGatherings();
+
+// Seed sample installations
+installations = [
+  {
+    id: 'INST-001',
+    name: 'Sardenberg Family',
+    type: 'Household',
+    fname: 'Carlos',
+    lname: 'Sardenberg',
+    gov: 'Family Council',
+    city: 'Boca Raton, FL',
+    mcGov: 'Governed by a Church',
+    mcGovDesc: 'Under spiritual covering of JSR Design Group church network.',
+    board: [
+      { firstName: 'Carlos', lastName: 'Sardenberg', role: 'Head of Household' },
+      { firstName: 'Maria', lastName: 'Sardenberg', role: 'Co-Lead' }
+    ],
+    services: [
+      { svcType: 'request', title: 'Interior Design Consultation', category: 'Creative', price: 'Budget TBD', desc: 'Need help with interior selections for the new Boca Raton home.', avail: 'Q3 2026', contact: 'carlos@sardenberg.com', id: 1 }
+    ]
+  },
+  {
+    id: 'INST-002',
+    name: 'JSR Design Group Inc.',
+    type: 'Business',
+    fname: 'John',
+    lname: 'Reed',
+    gov: 'Sole Leadership',
+    city: 'Boca Raton, FL',
+    mcGov: 'Independent',
+    mcGovDesc: 'Self-governed professional entity.',
+    board: [
+      { firstName: 'John', lastName: 'Reed', role: 'Principal Architect' }
+    ],
+    services: [
+      { svcType: 'offer', title: 'Residential Architectural Design', category: 'Construction', price: '$150/hr', desc: 'Full-service residential design from concept to permit set.', avail: 'Ongoing', contact: 'jsr@jsrdesign.com', id: 2 },
+      { svcType: 'offer', title: 'BIM Consultation', category: 'Technology', price: '$200/session', desc: 'Revit and BIM workflow support for small architecture firms.', avail: 'Weekly slots', contact: 'jsr@jsrdesign.com', id: 3 }
+    ]
+  }
+];
+
+renderInstallationsList();
+renderDoctrineChurchList();
+</script>
+</body>
+</html>
